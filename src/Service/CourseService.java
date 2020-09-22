@@ -1,7 +1,10 @@
 package Service;
 
 import Course.Courses;
+import Exceptions.ProjectException;
 import Repository.UsersRepository;
+import Util.Messages;
+
 
 
 public class CourseService {
@@ -19,6 +22,14 @@ public class CourseService {
     	 
       }
       
+  	public static void deleteCourse(Courses course) {
+		if (usersRepository.getCourseById(course.getCourseId()) != null) {
+			usersRepository.deleteCourse(course.getCourseId());
+		} else {
+			throw new ProjectException(Messages.COURSE_DOES_NOT_EXISTS.getMessage());
+		}
+	}
       
-      
+  	
+  	
 }

@@ -14,7 +14,8 @@ import Exceptions.ProjectException;
 import Service.CourseService;
 import Service.ProfessorService;
 import Service.StudentService;
-//import exceptions.CustomException;
+
+
 
 
 
@@ -30,10 +31,10 @@ public class AdministratorView {
 		
 		System.out.println("For Course                    For Professor                              For Student                  GO BACK");
 		System.out.println("------------------------------------------------------------------------------------------------------------------");
-		System.out.println("1-Add Course                2- Add professor                           6- Edit student          9- GO BACK TO LOGIN PAGE." );
-		System.out.println("                            3- Edit professor                          7- Delete student");
-		System.out.println("                            4- Delete professor                        8- List students.");
-		System.out.println("                            5- List professors.                                        ");
+		System.out.println("1-Add Course                3- Add professor                           7- Edit student          10- GO BACK TO LOGIN PAGE." );
+		System.out.println("2-Delete Course             4- Edit professor                          8- Delete student");
+		System.out.println("                            5- Delete professor                        9- List students.");
+		System.out.println("                            6- List professors.                                        ");
 		System.out.println("\n");
 	
 		
@@ -52,6 +53,7 @@ public class AdministratorView {
 			break;
 	    
 		case 2 :
+			deleteCourse();
 			break;
 			
 		case 3 :
@@ -115,6 +117,25 @@ public class AdministratorView {
 		}
 
 	}//end of addcourse
+	
+	public void deleteCourse() {
+		System.out.println("Give the course's ID you want to delete.");
+		Scanner sc = new Scanner(System.in);
+		try {
+			Courses course =new Courses();
+			course.setCourseId(sc.nextInt());
+			CourseService.deleteCourse(course);
+			
+			System.out.printf("The course with id %d and name %s is deleted.", course.getCourseId(),course.getCourseName());
+	      
+			adminMenu();
+		} catch (ProjectException exception) {
+			System.out.println(exception.getMessage());
+		} finally {
+			sc.close();
+		}
+
+	}
 	
 	/*public void addProfessor(Courses c) {
 		
