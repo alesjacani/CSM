@@ -3,6 +3,7 @@ package View;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import javax.security.auth.login.LoginContext;
 import javax.swing.JOptionPane;
 
 import Course.Courses;
@@ -13,7 +14,7 @@ public class Menu {
 
 	
 	public void start() {
-		Courses course1 = new Courses("Math.");
+		Courses course1 = new Courses();
 		
 		
 		System.out.println(" ~ Welcome everybody! :) ~ \n");
@@ -32,7 +33,7 @@ public class Menu {
 		   switch (number) {
 
 		   case 1:
-		   	new AdministratorView().AdminLoginView(course1);
+		   	new Login().AdminLoginView();
 		   	break;
 		   	
 		   case 2 :

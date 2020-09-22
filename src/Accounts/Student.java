@@ -7,9 +7,9 @@ public class Student {
 	private String lastNameStudent;
 	private String userNameStudent;
 	private String passwordStudent;
-	Courses [] studentCourses ;
 	
 	
+	private int idStudent;
 
 	
 	
@@ -17,6 +17,14 @@ public class Student {
 	
 	
 	
+	public int getIdStudent() {
+		return idStudent;
+	}
+
+	public void setIdStudent(int idStudent) {
+		this.idStudent = idStudent;
+	}
+
 	public Student(String firstNameStudent, String lastNameStudent, String userNameStudent, String passwordStudent) {
 		super();
 		this.firstNameStudent = firstNameStudent;
@@ -57,13 +65,7 @@ public class Student {
 		this.passwordStudent = passwordStudent;
 	}
 
-	public Courses[] getStudentCourses() {
-		return studentCourses;
-	}
 
-	public void setStudentCourses(Courses[] studentCourses) {
-		this.studentCourses = studentCourses;
-	} 
 	
 	
 

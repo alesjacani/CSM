@@ -4,21 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Accounts.Professor;
-import Accounts.Student;
 
 public class Courses {
 	
 private String courseName;
-private String courseId;
+private int courseId;
 private String desciption;
+private String durationTime;
 
-
-public Courses(String name) {
-	this.courseName =name;
-}
 
 private List<Professor> professorList = new ArrayList<>();
-private List <Student> studentList = new ArrayList<>();
+
+
+
+public Courses() {
+	super();
+
+}
+
+
+public String getDurationTime() {
+	return durationTime;
+}
+
+public void setDurationTime(String durationTime) {
+	this.durationTime = durationTime;
+}
+
+
+
+
 
 
 public List<Professor> getProfessorList() {
@@ -29,13 +44,7 @@ public void setProfessorList(List<Professor> professorList) {
 	this.professorList = professorList;
 }
 
-public List<Student> getStudentList() {
-	return studentList;
-}
 
-public void setStudentList(List<Student> studentList) {
-	this.studentList = studentList;
-}
 
 
 
@@ -49,12 +58,12 @@ public void setCourseName(String courseName) {
 	this.courseName = courseName;
 }
 
-public String getCourseId() {
+public int getCourseId() {
 	return courseId;
 }
 
-public void setCourseId(String courseId) {
-	this.courseId = courseId;
+public void setCourseId(int courseId) {
+	this.courseId=courseId;
 }
 
 

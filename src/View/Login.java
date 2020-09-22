@@ -6,28 +6,46 @@ import Accounts.Administrator;
 import Accounts.Professor;
 import Accounts.Student;
 import Accounts.User;
+import Course.Courses;
 import Exceptions.ProjectException;
+import View.AdministratorView;
 
-//public class Login {
 
-	//Administrator admin = new Administrator("Alesja", "Cani", "alesjacani", "alesja123");
-	
-//	Professor professor1 = new Professor ("Luljeta", "Cani","lulicani", "luli123");
-	
-	//Student student1 = new Student("aldo", "dervishi", "aldodervishi", "dervishi123");
-	
-	
-	
-	//  public void LoginAdmin(Administrator a) {
+
+public class Login {
+	Administrator admin = new Administrator(1399, "Alesja", "Cani", "alesjacani", "ales123");
+	  
+	  
+	public void AdminLoginView() {
+		
+		Scanner input = new Scanner (System.in);
+		System.out.println("\n| PLEASE LOGIN IN TO CONTINUE |  \n");
+		
+		System.out.print("Write your username: " );
+		
+		String userName = input.next();
+		System.out.println("-------------------------------------------------------------");
+		
+		System.out.print("Write your password: ");
+		String password = input.next();
+		
+		
+		if (admin.getUserNameAdmin().equals(userName) && admin.getPasswordAdmin().equals(password)) {
 			
-	//		if ( a.getUserNameAdmin().equals(admin.getUserNameAdmin()) && a.getPasswordAdmin().equalsIgnoreCase(admin.getPasswordAdmin())) 
-		//		{
-	//				new AdministratorView().adminViewAfterLogin();
-	//		}
-	//		else {
-	//			throw new ProjectException("Incorret username or password.");
-	//		}
-//	}
-//	
+		   	new AdministratorView().adminMenu();
+
+		}
+		else {    
+			System.out.println(" ___________________________________________________________\n" +"|                                                           | \n"
+					+ "| INCORRECT USERNAME OR PASSWORD.                           | \n| Please try again!                                         |\n"
+					+ "|___________________________________________________________|\n");
+			
+			
+			AdminLoginView();
+		}
+		input.close();
+		}
 	
-//}
+	
+	
+}

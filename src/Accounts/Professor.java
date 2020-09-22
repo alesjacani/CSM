@@ -13,7 +13,9 @@ public class Professor  {
 	private String lastNameProf;
 	private String userNameProf;
 	private String passwordProf;
-
+	private int idProfessor;
+	
+	private List<Courses> courseList = new ArrayList<>();
 	//Courses [] professorCourses ;
 	
 	
@@ -21,17 +23,29 @@ public class Professor  {
 	//private Grade []grades;
 	
 	
-	public Professor(String firstNameProf, String lastNameProf, String userNameProf, String passwordProf) {
-		super();
-		this.firstNameProf = firstNameProf;
-		this.lastNameProf = lastNameProf;
-		this.userNameProf = userNameProf;
-		this.passwordProf = passwordProf;
-	}
+	
 
 	public Professor() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	
+	
+	
+	public List<Courses> getCourseList() {
+		return courseList;
+	}
+
+
+
+
+	public void setCourseList(List<Courses> courseList) {
+		this.courseList = courseList;
+	}
+
+
+
+
 	public String getFirstNameProf() {
 		return firstNameProf;
 	}
@@ -55,6 +69,17 @@ public class Professor  {
 	}
 	public void setPasswordProf(String passwordProf) {
 		this.passwordProf = passwordProf;
+	}
+
+	
+	
+	
+	public int getIdProfessor() {
+		return idProfessor;
+	}
+
+	public void setIdProfessor(int idProfessor) {
+		this.idProfessor = idProfessor;
 	}
 
 	@Override

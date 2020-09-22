@@ -1,7 +1,8 @@
 package Accounts;
 
 public class Administrator{
-
+    
+	private int adminId;
 	private String firstNameAdmin;
 	private String lastNameAdmin;
 	private String userNameAdmin;
@@ -12,13 +13,30 @@ public class Administrator{
 		
 	}
 	
-	public Administrator(String firstNameAdmin, String lastNameAdmin, String userNameAdmin, String passwordAdmin) {
+
+	
+	
+	public Administrator(int adminId, String firstNameAdmin, String lastNameAdmin, String userNameAdmin,
+			String passwordAdmin) {
 		super();
+		this.adminId = adminId;
 		this.firstNameAdmin = firstNameAdmin;
 		this.lastNameAdmin = lastNameAdmin;
 		this.userNameAdmin = userNameAdmin;
 		this.passwordAdmin = passwordAdmin;
 	}
+
+
+
+
+	public int getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(int adminId) {
+		this.adminId = adminId;
+	}
+
 	public String getFirstNameAdmin() {
 		return firstNameAdmin;
 	}

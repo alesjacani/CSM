@@ -12,18 +12,6 @@ public class ProfessorService {
 static UsersRepository profRepository  = new UsersRepository();
 
 
-	public static void addProfessors(Professor professor,Courses course) {
-		if(profRepository.professorExists(professor,course)) {
-			throw new ProjectException(Messages.PROFESSOR_EXISTS.getMessage());
-			
-		} else {
-            profRepository.addProfessor(professor, course);
-		}
-	
-
-	}//end of addProfessors
-	
-	
 
 	
 	

@@ -1,34 +1,34 @@
 package Accounts;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Course.Courses;
 
 public class Grade {
-
-	private Courses courses;
-	private Student students;
-	private int grade;
+	private List<Student> studentList = new ArrayList<>();
+    private List<Courses> courseList = new ArrayList<>();
+    private int grade;
 	
-	public Grade(Courses courses, Student students, int grade) {
-		super();
-		this.courses = courses;
-		this.students = students;
-		this.grade = grade;
+	
+   
+
+
+
+	public List<Student> getStudentList() {
+		return studentList;
 	}
 
-	public Courses getCourses() {
-		return courses;
+	public void setStudentList(List<Student> studentList) {
+		this.studentList = studentList;
 	}
 
-	public void setCourses(Courses courses) {
-		this.courses = courses;
+	public List<Courses> getCourseList() {
+		return courseList;
 	}
 
-	public Student getStudents() {
-		return students;
-	}
-
-	public void setStudents(Student students) {
-		this.students = students;
+	public void setCourseList(List<Courses> courseList) {
+		this.courseList = courseList;
 	}
 
 	public int getGrade() {
