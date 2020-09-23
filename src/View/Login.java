@@ -1,5 +1,6 @@
 package View;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import Accounts.Administrator;
@@ -16,36 +17,65 @@ public class Login {
 	Administrator admin = new Administrator(1399, "Alesja", "Cani", "alesjacani", "ales123");
 	  
 	  
-	public void AdminLoginView() {
-		
-		Scanner input = new Scanner (System.in);
-		System.out.println("\n| PLEASE LOGIN IN TO CONTINUE |  \n");
-		
-		System.out.print("Write your username: " );
-		
-		String userName = input.next();
-		System.out.println("-------------------------------------------------------------");
-		
-		System.out.print("Write your password: ");
-		String password = input.next();
+	public void adminView() {
 		
 		
-		if (admin.getUserNameAdmin().equals(userName) && admin.getPasswordAdmin().equals(password)) {
-			
-		   	new AdministratorView().adminMenu();
+		System.out.println("\n| PLEASE type 1 to LOGIN IN  |");
+		System.out.println("| Type 2 to GO BACK  :)      |\n");
+		
 
+		Scanner input = new Scanner (System.in);
+		
+		try {
+			int number = input.nextInt();
+			switch (number) {
+			case 1:
+				adminLogin();
+				break;
+			case 2:
+				new Menu().start();
+			default:
+				  System.out.println("  Please write ONLY INTEGERS FROM 1-2. \nLET'S START OVER & WRITE AGAIN.\n\n");
+				adminView();
+			}
 		}
-		else {    
-			System.out.println(" ___________________________________________________________\n" +"|                                                           | \n"
-					+ "| INCORRECT USERNAME OR PASSWORD.                           | \n| Please try again!                                         |\n"
-					+ "|___________________________________________________________|\n");
-			
-			
-			AdminLoginView();
+		   catch (InputMismatchException e) {
+			   System.out.println("  Please write ONLY INTEGERS FROM 1-2.  \n");
+			   adminView();
 		}
-		input.close();
-		}
+		finally {
+			input.close();}
+		
+		
+	}
+	
+public void adminLogin() {
+	System.out.println(" \n*Enter your details right to continue*\n");
+	System.out.print("Write your username: " );
+	Scanner input = new Scanner (System.in);
+	
+	String userName = input.next();
+	System.out.println("-------------------------------------------------------------");
+	
+	System.out.print("Write your password: ");
+	String password = input.next();
 	
 	
+	if (admin.getUserNameAdmin().equals(userName) && admin.getPasswordAdmin().equals(password)) {
+		
+	   	new AdministratorView().adminMenu();
+
+	}
+	else {    
+		System.out.println(" ___________________________________________________________\n" +"|                                                           | \n"
+				+ "| INCORRECT USERNAME OR PASSWORD.                           | \n| Please try again!                                         |\n"
+				+ "|___________________________________________________________|\n");
+
+		adminLogin();
+	}
 	
+	
+	input.close();
+	}
+
 }

@@ -33,7 +33,7 @@ public class Menu {
 		   switch (number) {
 
 		   case 1:
-		   	new Login().AdminLoginView();
+		   	new Login().adminView();
 		   	break;
 		   	
 		   case 2 :

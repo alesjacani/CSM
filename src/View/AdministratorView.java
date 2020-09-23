@@ -14,6 +14,7 @@ import Exceptions.ProjectException;
 import Service.CourseService;
 import Service.ProfessorService;
 import Service.StudentService;
+import Util.Messages;
 
 
 
@@ -31,11 +32,11 @@ public class AdministratorView {
 		
 		System.out.println("For Course                    For Professor                              For Student                  GO BACK");
 		System.out.println("------------------------------------------------------------------------------------------------------------------");
-		System.out.println("1-Add Course                3- Add professor                           7- Edit student          10- GO BACK TO LOGIN PAGE." );
-		System.out.println("2-Delete Course             4- Edit professor                          8- Delete student");
-		System.out.println("                            5- Delete professor                        9- List students.");
-		System.out.println("                            6- List professors.                                        ");
-		System.out.println("\n");
+		System.out.println("1-Add Course                5- Add professor                           9- Edit student          12- GO BACK TO LOGIN PAGE." );
+		System.out.println("2-Delete all Courses        6- Edit professor                          10- Delete student");
+		System.out.println("3-View course details       7- Delete professor                        11- List students.");
+		System.out.println("  with specific id          8- List professors.                                        ");
+		System.out.println("4-List all courses                                                                   \n");
 	
 		
 		try {
@@ -53,14 +54,15 @@ public class AdministratorView {
 			break;
 	    
 		case 2 :
-			deleteCourse();
+		deleteCourse();
 			break;
 			
 		case 3 :
+			getCoursebyId();
 			break;
 			
 		case 4 :
-		
+		listAllCourses();
 			break;
 			
 		case 5 :
@@ -77,10 +79,17 @@ public class AdministratorView {
 			break;
 			
 		case 9:
+		
+			break;
+		case 10:
+			break;
+		case 11:
+		
+			break;
+		case 12:
 			new Menu().start();
 			break;
-			
-			default:
+		default:
 				System.out.println("******   Please write ONLY INTEGERS FROM 1-9.    ****** \n \n");
 				adminMenu();
 				//try ex ??????????
@@ -119,16 +128,17 @@ public class AdministratorView {
 	}//end of addcourse
 	
 	public void deleteCourse() {
-		System.out.println("Give the course's ID you want to delete.");
+		
 		Scanner sc = new Scanner(System.in);
 		try {
 			Courses course =new Courses();
-			course.setCourseId(sc.nextInt());
+			
 			CourseService.deleteCourse(course);
 			
-			System.out.printf("The course with id %d and name %s is deleted.", course.getCourseId(),course.getCourseName());
+			System.out.printf("YOU DELETED ALL COURSES.");
 	      
 			adminMenu();
+			
 		} catch (ProjectException exception) {
 			System.out.println(exception.getMessage());
 		} finally {
@@ -137,6 +147,45 @@ public class AdministratorView {
 
 	}
 	
+	public void  getCoursebyId () {
+		
+		
+		System.out.println("Give id to see the course details:");
+		Scanner sc = new Scanner(System.in);
+		
+		try {
+			Courses course =new Courses();
+			
+			int courseId= sc.nextInt();
+			course.setCourseId(courseId) ;
+			
+			
+				 for (Courses c : CourseService.getCourseByID(course.getCourseId())) {
+				 if (courseId ==course.getCourseId()) {
+						System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s.", c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),c.getProfessorList());
+						adminMenu();
+					}
+				 }
+				 System.out.println("THIS ID DOES NOT EXITS. TRY AGAIN.");
+				 getCoursebyId();			
+				 
+				 } catch (InputMismatchException exception) {
+        System.out.println("Write only integers please.");
+		getCoursebyId();
+		
+		} finally {
+		sc.close();
+		}
+		
+	}//end of getcoursebyid
+	
+	public void listAllCourses() {
+		for(Courses c : CourseService.listAllCourses()) {
+				System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s. \n \n", c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),c.getProfessorList());
+			}
+			
+		adminMenu();
+	}
 	/*public void addProfessor(Courses c) {
 		
 		System.out.println(" * ADD Professor Category. * ");
