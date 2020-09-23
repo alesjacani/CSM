@@ -32,11 +32,12 @@ public class AdministratorView {
 		
 		System.out.println("For Course                    For Professor                              For Student                  GO BACK");
 		System.out.println("------------------------------------------------------------------------------------------------------------------");
-		System.out.println("1-Add Course                5- Add professor                           9- Edit student          12- GO BACK TO LOGIN PAGE." );
-		System.out.println("2-Delete all Courses        6- Edit professor                          10- Delete student");
-		System.out.println("3-View course details       7- Delete professor                        11- List students.");
-		System.out.println("  with specific id          8- List professors.                                        ");
-		System.out.println("4-List all courses                                                                   \n");
+		System.out.println("1-Add Course                6- Add professor                           10- Edit student          13- GO BACK TO LOGIN PAGE." );
+		System.out.println("2-Delete all Courses        7- Edit professor                          11- Delete student");
+		System.out.println("3-View course details       8- Delete professor                        12- List students.");
+		System.out.println("  with specific id          9- List professors.                                        ");
+		System.out.println("4-List all courses                                                                   ");
+		System.out.println("5-Delete course \nby specific id \n");
 	
 		
 		try {
@@ -66,7 +67,7 @@ public class AdministratorView {
 			break;
 			
 		case 5 :
-		//	addStudent();
+		deleteCoursebyId();
 			break;
 			
 		case 6 :
@@ -87,6 +88,9 @@ public class AdministratorView {
 		
 			break;
 		case 12:
+			
+			break;
+		case 13:
 			new Menu().start();
 			break;
 		default:
@@ -146,6 +150,36 @@ public class AdministratorView {
 		}
 
 	}
+	
+	
+	public void deleteCoursebyId() {
+		System.out.println("Give course's id to delete it:");
+		Scanner sc = new Scanner(System.in);
+		try {
+			Courses course = new Courses();
+
+			int courseId= sc.nextInt();
+			course.setCourseId(courseId) ;
+			for(Courses c : CourseService.listAllCourses()) {
+				if (courseId== course.getCourseId()) {
+					CourseService.deleteCourseById(c.getCourseId());
+					System.out.printf("Course with name %s and id %d is deleted.", c.getCourseName(),c.getCourseId());
+					adminMenu();
+				}
+				 System.out.println("THIS ID DOES NOT EXITS. TRY AGAIN.");
+				deleteCoursebyId();			
+			}
+			 
+		}catch (InputMismatchException exception) {
+	        System.out.println("Write only integers please.");
+		    deleteCoursebyId();
+			
+			}finally {
+				sc.close();
+			}
+		
+	}
+	
 	
 	public void  getCoursebyId () {
 		

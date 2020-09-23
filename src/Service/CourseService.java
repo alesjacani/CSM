@@ -42,6 +42,9 @@ public class CourseService {
   	public static void deleteCourse(Courses course) {
 		usersRepository.deleteCourse(course);
   	}
+  	public static void deleteCourseById(Integer courseId) {
+  		usersRepository.deleteCourseById(courseId);
+  	}
       
   	public static List<Courses> listAllCourses(){
   		return usersRepository.listAllCourses();

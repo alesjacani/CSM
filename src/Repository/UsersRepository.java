@@ -91,7 +91,16 @@ public class UsersRepository {
 	}//end of deleteCourse 
 	
 
-	 
+	 public void deleteCourseById(Integer courseId) {
+		 try (Connection connection = ConnectionDb.getConnection();
+			  PreparedStatement preparedSt= connection.prepareStatement(DELETE_COURSE_BY_ID);) {
+			    preparedSt.setInt(1, courseId);
+				preparedSt.executeUpdate();
+			}
+		 catch (SQLException e) {
+				System.out.println("error " + e);
+			}
+	 }//end of delete by id
 		
 	public List<Courses> getCourseById(Integer courseId) {
 	List <Courses> courses = new ArrayList();
@@ -118,6 +127,8 @@ public class UsersRepository {
 		}
 	}//end of getCourseById
 	
+	
+	
 	public List<Courses> listAllCourses() {
 		List <Courses> courses = new ArrayList<>();
 		try (Connection connection = ConnectionDb.getConnection();
@@ -126,6 +137,7 @@ public class UsersRepository {
 			           
 			    while (rs.next()) {
 			    	Courses course = new Courses(); 
+			    	
 			    	course.setCourseId(rs.getInt("course_id"));
 					course.setCourseName(rs.getString("course_name"));
 					course.setDesciption(rs.getString("course_description"));
