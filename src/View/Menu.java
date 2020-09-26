@@ -37,7 +37,7 @@ public class Menu {
 		   	break;
 		   	
 		   case 2 :
-		   	new ProfessorView().professorMenu();
+		   	new Login().professorView();
 		   	break;
 		   	
 		   case 3:

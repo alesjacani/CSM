@@ -11,14 +11,10 @@ import Accounts.Student;
 import Accounts.User;
 import Course.Courses;
 import Exceptions.ProjectException;
-import Service.CourseService;
+import Service.AdminService;
 import Service.ProfessorService;
 import Service.StudentService;
 import Util.Messages;
-
-
-
-
 
 public class AdministratorView {
 	  Administrator admin = new Administrator(1399, "Alesja", "Cani", "alesjacani", "ales123");
@@ -41,7 +37,8 @@ public class AdministratorView {
 	
 		
 		try {
-			
+			Courses course = new Courses();
+			Professor professor = new Professor();
 		
 		Scanner input = new Scanner(System.in);
 		
@@ -67,10 +64,11 @@ public class AdministratorView {
 			break;
 			
 		case 5 :
-		deleteCoursebyId();
+		//deleteCoursebyId();
 			break;
 			
 		case 6 :
+			addProfessor();
 			break;
 			
 		case 7 :
@@ -80,7 +78,7 @@ public class AdministratorView {
 			break;
 			
 		case 9:
-		
+		listAllProfessors();
 			break;
 		case 10:
 			break;
@@ -107,24 +105,35 @@ public class AdministratorView {
 	}
 	
 	
-	
-	
-	
 	public void addCourse() {
 		System.out.println("* ADD course category *");
 		Scanner sc = new Scanner(System.in);
-		Courses course = new Courses();
+	
 		try {
+			Courses course = new Courses();
 			System.out.println("Write the name of course.");
-			course.setCourseName(sc.nextLine());
-			CourseService.addCourse(course);
-			CourseService.getCourseIdyName(course);
-			
+			String coursename = sc.nextLine();
+			course.setCourseName(coursename);
+			AdminService.addCourse(course);
+		    AdminService.getCourseIdyName(course);                            
 			System.out.printf ("You just add a new course with name %s with id %d ", course.getCourseName(), course.getCourseId());
-			
 			adminMenu();
-		} catch (ProjectException exception) {
-			System.out.println(exception.getMessage());
+			/*for(Courses c : CourseService.listAllCourses()) {
+					if (coursename.equalsIgnoreCase(c.getCourseName()))  { 
+						System.out.println("This course already exists.");
+						addCourse();	
+					 }
+					else {
+					CourseService.addCourse(course);
+				    CourseService.getCourseIdyName(course);                            
+					System.out.printf ("You just add a new course with name %s with id %d ", course.getCourseName(), course.getCourseId());
+							
+							adminMenu();
+							}
+			}*/
+		} catch (ProjectException exception) {//string merr dhe int ???????
+			System.out.println(exception);
+			addCourse();
 		} finally {
 			sc.close();
 		}
@@ -137,7 +146,7 @@ public class AdministratorView {
 		try {
 			Courses course =new Courses();
 			
-			CourseService.deleteCourse(course);
+			AdminService.deleteCourse(course);
 			
 			System.out.printf("YOU DELETED ALL COURSES.");
 	      
@@ -152,27 +161,27 @@ public class AdministratorView {
 	}
 	
 	
-	public void deleteCoursebyId() {
+	public void deleteCoursebyId(Courses course, Professor professor) {
 		System.out.println("Give course's id to delete it:");
 		Scanner sc = new Scanner(System.in);
 		try {
-			Courses course = new Courses();
+		//	Courses course = new Courses();
 
 			int courseId= sc.nextInt();
 			course.setCourseId(courseId) ;
-			for(Courses c : CourseService.listAllCourses()) {
+			for(Courses c : AdminService.listAllCourses()) {
 				if (courseId== course.getCourseId()) {
-					CourseService.deleteCourseById(c.getCourseId());
+					AdminService.deleteCourseById(c.getCourseId());
 					System.out.printf("Course with name %s and id %d is deleted.", c.getCourseName(),c.getCourseId());
 					adminMenu();
 				}
 				 System.out.println("THIS ID DOES NOT EXITS. TRY AGAIN.");
-				deleteCoursebyId();			
+				deleteCoursebyId(course,professor);			
 			}
 			 
 		}catch (InputMismatchException exception) {
 	        System.out.println("Write only integers please.");
-		    deleteCoursebyId();
+		    deleteCoursebyId(course,professor);
 			
 			}finally {
 				sc.close();
@@ -194,7 +203,7 @@ public class AdministratorView {
 			course.setCourseId(courseId) ;
 			
 			
-				 for (Courses c : CourseService.getCourseByID(course.getCourseId())) {
+				 for (Courses c : AdminService.getCourseByID(course.getCourseId())) {
 				 if (courseId ==course.getCourseId()) {
 						System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s.", c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),c.getProfessorList());
 						adminMenu();
@@ -214,62 +223,77 @@ public class AdministratorView {
 	}//end of getcoursebyid
 	
 	public void listAllCourses() {
-		for(Courses c : CourseService.listAllCourses()) {
-				System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s. \n \n", c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),c.getProfessorList());
-			}
-			
-		adminMenu();
+		for (Courses c : AdminService.listAllCourses() ) {
+			for (Professor p :AdminService.listAllProfessorById(c.getProfessorId())) {
+System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s. \n \n ", c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(), p.getFirstNameProf());
+			 }
+		}
+	adminMenu();
 	}
-	/*public void addProfessor(Courses c) {
+	
+	 
+	public void listAllProfessors() {
+		for (Professor p: AdminService.listAllProfessors()) {
+			System.out.printf("\nProfessor %s %s , with username %s teaching in course/s:\n",p.getFirstNameProf(),p.getLastNameProf(),p.getUsernameProf());
+
+			for (Courses c : AdminService.getCourseByProfessorId(p.getIdProfessor())) {
+	//System.out.printf("\nProfessor %s %s , with username %s teaching in course/s:\n",p.getFirstNameProf(),p.getLastNameProf(),p.getUsernameProf());
+				System.out.printf("-%s\n",c.getCourseName());
+			}
+		}
+	}
+	public void addProfessor() {
 		
 		System.out.println(" * ADD Professor Category. * ");
 		
-		System.out.print("Please write in which course do you want to add the professor. -->  ");
+
 		Scanner sc = new Scanner(System.in);
-		
-		c.setCourseName(sc.next());
-		
-		
-		System.out.println("Please add professor's details.");
-		Professor professor1 = new Professor();
-		
+		Professor professor = new Professor();
+		Courses course = new Courses();
 		try {
 			
+			System.out.println("Please add professor's details.");
+			
+			System.out.print("Please write in which course do you want to add the professor. -->  ");
+			
+			course.setCourseId(sc.nextInt());
 			
 			System.out.print("Give name: ");
-			professor1.setFirstNameProf(sc.next());
+			professor.setFirstNameProf(sc.next());
 			
 			System.out.print("Give last name: "); 
-			professor1.setLastNameProf(sc.next());
+			professor.setLastNameProf(sc.next());
 			
 			System.out.print("Give usernamename: ");
-			professor1.setUserNameProf(sc.next());
+			professor.setUsernameProf(sc.next());
 			
 			System.out.print("Give password: ");
-			professor1.setPasswordProf((sc.next()));
+			professor.setPasswordProf((sc.next()));
 			
 			
-	//		ProfessorService.addProfessors(professor1, c);
-	//		ProfessorService.addCourse(professor1, c);
-		//	System.out.printf("<<<<<<<<<< You just added professor %s %s in %s course . >>>>>>>>>>", professor1.getFirstNameProf() , professor1.getLastNameProf(),c.getCourseName());
+			AdminService.addProfessor(professor);
+			AdminService.getProfIdbyUsername(professor);
 			
-			
-			 
-		//	adminMenu(c);
-			
-	//	} 
-	
+			for (Courses c : AdminService.getCourseByID(course.getCourseId())) {
+
 		
-		catch (ProjectException exception) {
+			AdminService.addProfIntoCourse(professor, course);
+		
+		    System.out.printf("<<<<<<<<<< You just added professor %s %s with id %d. >>>>>>>>>>", professor.getFirstNameProf() , professor.getLastNameProf(),professor.getIdProfessor());
+		    System.out.printf("into course %s",c.getCourseName());
+			adminMenu();
+			 }
+		} catch (ProjectException exception) {
+			System.out.println(">>>> "+exception.getMessage()+ "\nPlease try to add another professor <<<<\n");
 			
-			System.out.println("\n"+exception.getMessage());
-			
-			adminMenu(c);
+			addProfessor();
 		}
 		finally {
 			sc.close();
 		}
 	
+		
+		
 		
 		
 		

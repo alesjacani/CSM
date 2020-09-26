@@ -9,7 +9,6 @@ import Exceptions.ProjectException;
 public class ProfessorService {
 	
 	
-static UsersRepository profRepository  = new UsersRepository();
 
 
 

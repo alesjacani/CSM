@@ -2,19 +2,12 @@ package View;
 
 import java.util.Scanner;
 
+import Accounts.Professor;
+
 public class ProfessorView {
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public void professorMenu() {
 		System.out.println("\n");
-
+        Professor professor = new Professor();
 		System.out.println("WELCOME TO PROFESSOR MENU");
 		System.out.println("\n");
 		System.out.println("Please write down the number to continue.");

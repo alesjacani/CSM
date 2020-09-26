@@ -11,11 +11,12 @@ public class Professor  {
 	
 	private String firstNameProf;
 	private String lastNameProf;
-	private String userNameProf;
+	private String usernameProf;
 	private String passwordProf;
 	private int idProfessor;
 	
-	private List<Courses> courseList = new ArrayList<>();
+	
+	//private List<Courses> courseList = new ArrayList<>();
 	//Courses [] professorCourses ;
 	
 	
@@ -32,16 +33,16 @@ public class Professor  {
 	
 	
 	
-	public List<Courses> getCourseList() {
-		return courseList;
-	}
+	//public List<Courses> getCourseList() {
+	//	return courseList;
+	//}
 
 
 
 
-	public void setCourseList(List<Courses> courseList) {
-		this.courseList = courseList;
-	}
+	//public void setCourseList(List<Courses> courseList) {
+	//	this.courseList = courseList;
+	//}
 
 
 
@@ -58,11 +59,11 @@ public class Professor  {
 	public void setLastNameProf(String lastNameProf) {
 		this.lastNameProf = lastNameProf;
 	}
-	public String getUserNameProf() {
-		return userNameProf;
+	public String getUsernameProf() {
+		return usernameProf;
 	}
-	public void setUserNameProf(String userNameProf) {
-		this.userNameProf = userNameProf;
+	public void setUsernameProf(String userNameProf) {
+		this.usernameProf = userNameProf;
 	}
 	public String getPasswordProf() {
 		return passwordProf;
@@ -89,7 +90,7 @@ public class Professor  {
 		result = prime * result + ((firstNameProf == null) ? 0 : firstNameProf.hashCode());
 		result = prime * result + ((lastNameProf == null) ? 0 : lastNameProf.hashCode());
 		result = prime * result + ((passwordProf == null) ? 0 : passwordProf.hashCode());
-		result = prime * result + ((userNameProf == null) ? 0 : userNameProf.hashCode());
+		result = prime * result + ((usernameProf == null) ? 0 : usernameProf.hashCode());
 		return result;
 	}
 
@@ -117,10 +118,10 @@ public class Professor  {
 				return false;
 		} else if (!passwordProf.equals(other.passwordProf))
 			return false;
-		if (userNameProf == null) {
-			if (other.userNameProf != null)
+		if (usernameProf == null) {
+			if (other.usernameProf != null)
 				return false;
-		} else if (!userNameProf.equals(other.userNameProf))
+		} else if (!usernameProf.equals(other.usernameProf))
 			return false;
 		return true;
 	}
@@ -128,7 +129,7 @@ public class Professor  {
 	@Override
 	public String toString() {
 		return "Professor [firstNameProf=" + firstNameProf + ", lastNameProf=" + lastNameProf + ", userNameProf="
-				+ userNameProf + ", passwordProf=" + passwordProf + "]";
+				+ usernameProf + ", passwordProf=" + passwordProf + "]";
 	}
 
 	
