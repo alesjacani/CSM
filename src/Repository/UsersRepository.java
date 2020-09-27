@@ -14,7 +14,6 @@ import Util.ConnectionDb;
 
 public class UsersRepository {
 	
-	
 	//*ADD, getIdbyName, DELETE for COURSE* // metodat e ADMINIT
 	private final String ADD_COURSE =  "INSERT INTO course (course_name) VALUES (?)";
     private final String GET_ID_OF_COURSE= "SELECT course_id FROM course WHERE course_name=?";
@@ -32,9 +31,10 @@ public class UsersRepository {
    
     private final String PROFESSOR_EXIST="SELECT COUNT (*) FROM  professor WHERE professor_username=?";
     private final String GET_PROF_BY_USERNAME_AND_PASSWORD="SELECT * FROM professor WHERE professor_username=? AND professor_password=?";
-   // private final String GET_COURSE_NAME_BY_PROFESSOR_USERNAME="SELECT course.course_name FROM course INNER JOIN professor ON course.professor_id= professor.professor_id WHERE professor.professor_username=?";
+    private final String GET_COURSE_NAME_BY_PROFESSOR_USERNAME="SELECT course.course_name FROM course INNER JOIN professor ON course.professor_id= professor.professor_id WHERE professor.professor_username=?";
     private final String LIST_ALL_PROFESSORS_BY_ID= "SELECT * FROM professor WHERE professor_id=?";
     private final String LIST_ALL_PROFESSORS="SELECT * FROM professor";
+    
 	public void addCourse(Courses course) {
 		try (Connection connection = ConnectionDb.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(ADD_COURSE))
@@ -365,8 +365,8 @@ public class UsersRepository {
 		
 	
 	
-	public List<Professor> getProfessorByUsernameAndPassword(Professor professor) {
-		List <Professor> professors = new ArrayList();
+	public Professor getProfessorByUsernameAndPassword(Professor professor) {
+	//	List <Professor> professors = new ArrayList();
 			try (Connection connection = ConnectionDb.getConnection();
 					PreparedStatement preparedSt = connection.prepareStatement(GET_PROF_BY_USERNAME_AND_PASSWORD);) {
 				
@@ -381,10 +381,8 @@ public class UsersRepository {
 					professor.setUsernameProf(rs.getString("professor_username"));
 					professor.setPasswordProf(rs.getString("professor_password"));
 					
-					professors.add(professor);
-				
 				}
-				return professors;
+				return professor;
 				
 			} catch (SQLException e) {
 				System.out.println("error " + e);
@@ -392,31 +390,7 @@ public class UsersRepository {
 			}
 		}//end of getProfessorByUsernameAndPassword
 	
-	/*public void getCourseNameByProfessorUsername( Courses course,Professor professor){
-    List<Courses> courses = new ArrayList();
-    List <Professor> professors = new ArrayList();
-		try(Connection connection = ConnectionDb.getConnection();
-			PreparedStatement preparedst = connection.prepareStatement(GET_COURSE_NAME_BY_PROFESSOR_USERNAME); ) {
-			
-			preparedst.setString(1, professor.getUsernameProf());
-		    
-			ResultSet rs = preparedst.executeQuery();
-			while(rs.next()) {
-			
-				course.setCourseName(rs.getString("course_name"));
-				course.setProfessorList(professors);
-				//professor.setCourseList(courses);
-		}
-			System.out.println(course.getCourseName());
-			
-		
-		
 
-		} catch (SQLException e) {
-			System.out.println("error " + e);
-		
-		}
-	}*/
 	
 	
 }//end of CLASS

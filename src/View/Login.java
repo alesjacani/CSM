@@ -118,7 +118,7 @@ public void professorView() {
 public void professorLogin() {
 	Scanner input = new Scanner (System.in);
 	Professor professor = new Professor();
-//	Courses course = new Courses();
+
 	System.out.println(" \n*Enter your details right to continue*\n");
 	
 	System.out.print("Write your username: " );
@@ -131,23 +131,10 @@ public void professorLogin() {
 	professor.setPasswordProf(input.next());
 	try {
 		AdminService.authenticateProfessor(professor);
-        System.out.printf("<<<<<<<<<< HELLO %S %S  >>>>>>>>>>", professor.getFirstNameProf(),professor.getLastNameProf());
-		System.out.println("You are added to the course/courses below:");
+    
+		new ProfessorView().professorMenu(professor);
+	
 		
-		for (Professor p :AdminService.listAllProfessorById(professor.getIdProfessor())) {
-			for (Courses c : AdminService.getCourseByProfessorId(p.getIdProfessor()) ) {
-				System.out.println(c.getCourseName());
-			 }
-		}
-	   //for (Courses c : AdminService.getCourseByProfessorId(professor.getIdProfessor()) ) {
-	   //System.out.println(c.getCourseName());
-		//}
-	    	
-	    	
-	     //System.out.printf("- %s \n",course.getCourseName());
-			// System.out.println(course.getCourseName());
-	     
-		//new ProfessorView().professorMenu();
 	} catch (ProjectException e) {
 		System.out.println("\n"+e.getMessage()+"\n");
 		professorLogin();

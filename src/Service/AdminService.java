@@ -74,15 +74,16 @@ public class AdminService {
   		 usersRepository.addProfIntoCourse(professor, course);
   	 }
   	  
-  	 public static List<Professor> authenticateProfessor(Professor professor) {
+  	 public static Professor authenticateProfessor(Professor professor) {
   		 if(usersRepository.professorExists(professor)) {
-  			return usersRepository.getProfessorByUsernameAndPassword(professor);
-  			 
+  			usersRepository.getProfessorByUsernameAndPassword(professor);
+  			 return professor;
   		 }else {
   			 throw new ProjectException(Messages.WRONG_USERNAME_OR_PASSWORD.getMessage());
   		 }
   	 }
   	 
+  
   	/*public static void getCourseNameByProfessorUsername(Courses course, Professor professor){
   		
 	usersRepository.getCourseNameByProfessorUsername(course,professor);

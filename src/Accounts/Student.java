@@ -8,15 +8,8 @@ public class Student {
 	private String userNameStudent;
 	private String passwordStudent;
 	
-	
 	private int idStudent;
 
-	
-	
-	
-	
-	
-	
 	public int getIdStudent() {
 		return idStudent;
 	}
@@ -25,12 +18,10 @@ public class Student {
 		this.idStudent = idStudent;
 	}
 
-	public Student(String firstNameStudent, String lastNameStudent, String userNameStudent, String passwordStudent) {
+	
+
+	public Student() {
 		super();
-		this.firstNameStudent = firstNameStudent;
-		this.lastNameStudent = lastNameStudent;
-		this.userNameStudent = userNameStudent;
-		this.passwordStudent = passwordStudent;
 	}
 
 	public String getFirstNameStudent() {
