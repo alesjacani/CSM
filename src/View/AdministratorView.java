@@ -270,13 +270,16 @@ public class AdministratorView {
 			System.out.println("Please add professor's details.\n");
 			
 			
-			
 			System.out.print("Please write in which course NAME do you want to add the professor. -->");
 			course.setCourseName(sc.next());
+			
+			
 			
 			AdminService.authenticateCourse(course);
 		    AdminService.courseHasProf(course);
 			
+		    
+		    
 		    System.out.print("Give name: ");
 			professor.setFirstNameProf(sc.next());
 			
@@ -289,8 +292,12 @@ public class AdministratorView {
 			System.out.print("Give password: ");
 			professor.setPasswordProf((sc.next()));
 			
+			//AdminService.authenticateProfessorByUsername(professor);
 			
 			AdminService.addProfessor(professor,course);
+			
+			
+			
 		    System.out.printf("<<<<<<<<<< You just added professor %s %s with id %d ", professor.getFirstNameProf() , professor.getLastNameProf(),professor.getIdProfessor());
 		    System.out.printf("into course %s . >>>>>>>>>>",course.getCourseName());
 			adminMenu();
@@ -315,7 +322,7 @@ public class AdministratorView {
 			
 			System.out.print("Give the professor id: ");
 			professor.setIdProfessor(input.nextInt());
-			
+			///authh
 			System.out.print("Give the course id you want to add the professor: ");
 			course.setCourseId(input.nextInt());
 			System.out.print("Give the course Name you want to add the professor: ");
@@ -409,7 +416,10 @@ System.out.printf("You just added professor: %s %s into %s course.",p.getFirstNa
 			System.out.println("Please give professor username: ");
 			professor.setFirstNameProf(sc.next());
 			
+			
+			
 		    AdminService.deleteProfessorByUsername(professor);
+		    
 			System.out.println("Professor was successfully deleted!");
 			adminMenu();
 				

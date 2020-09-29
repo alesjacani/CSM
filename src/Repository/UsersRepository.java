@@ -21,7 +21,10 @@ public class UsersRepository {
     private final String GET_COURSE_BY_NAME = "SELECT * FROM course where course_name = ?";
     private final String GET_COURSE_BY_PROFESSOR_ID = "SELECT * FROM course where professor_id = ?";
     private final String COURSE_EXIST = "SELECT COUNT (*) FROM course WHERE course_name=?";
+    ////////////////////////////
     private final String DELETE_COURSE_BY_NAME = "DELETE FROM course WHERE course_name=?";
+    private final String DELETE_COURSE_FROM_GRADE="DELETE course_id FROM grade WHERE course_id=?";
+    ///////////////////////EDDHE NGA TABELA GRADE
     private final String LIST_ALL_COURSE = "SELECT * FROM course INNER JOIN professor ON course.professor_id=professor.professor_id";
     
     private final String ADD_PROFESSOR="INSERT INTO professor (professor_name, professor_surname,professor_username,professor_password) VALUES (?,?,?,?)";
@@ -39,7 +42,7 @@ public class UsersRepository {
    private final String COURSE_HAS_PROF="SELECT COUNT (professor_id) FROM course WHERE course_name=?";
    private final String EDIT_PROFESSOR_DETAILS="UPDATE professor SET professor_name=?,professor_surname=?,professor_username=? WHERE professor_id=?";
    private final String DELETE_PROFESSOR_BY_USERNAME="DELETE FROM professor WHERE professor_username=?";
-   private final String DELETE_PROFESSOR_FROM_COURSE="DELETE FROM course WHERE professor_id=?";
+   private final String DELETE_PROFESSOR_FROM_COURSE="UPDATE course SET professor_id=null WHERE professor_id=?";
    
 	public void addCourse(Courses course) {
 		try (Connection connection = ConnectionDb.getConnection();
@@ -345,9 +348,11 @@ public boolean courseHasProfessor(Courses course) {
 	public boolean professorExistsOnlyUsername(Professor professor) {
 		try(Connection connection = ConnectionDb.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(PROFESSOR_EXIST2);) {
+			
 			preparedStatement.setString(1, professor.getUsernameProf());
 			
 			ResultSet rs = preparedStatement.executeQuery();
+			
 			while(rs.next()) {
 				if(rs.getInt(1)==0) {
 					 return false;
@@ -363,6 +368,10 @@ public boolean courseHasProfessor(Courses course) {
 		}
 		return false;
 	}
+	
+	
+	
+	
 	public int getProfessorIdByUsername (Professor professor) {
 		try (Connection connection =ConnectionDb.getConnection();
 				PreparedStatement preparedSt = connection.prepareStatement(GET_ID_OF_PROFESSOR);){
@@ -442,10 +451,10 @@ public void editProfessorDetails(Professor professor) {
 	
 	
 	
-	 public void deleteProfessorByUsername(String username) {
+	 public void deleteProfessorByUsername(Professor professor) {
 		 try (Connection connection = ConnectionDb.getConnection();
 			  PreparedStatement preparedSt= connection.prepareStatement(DELETE_PROFESSOR_BY_USERNAME);) {
-			    preparedSt.setString(1, username);
+			    preparedSt.setString(1, professor.getUsernameProf());
 				preparedSt.executeUpdate();
 			}
 		 catch (SQLException e) {
@@ -458,7 +467,7 @@ public void editProfessorDetails(Professor professor) {
 	 
 	 
 	 
-	 public void deleteProfessorFromCourse(int id) {
+	 public void deleteProfessorFromCourse(int  id) {
 		 try (Connection connection = ConnectionDb.getConnection();
 			  PreparedStatement preparedSt= connection.prepareStatement(DELETE_PROFESSOR_FROM_COURSE);) {
 			    preparedSt.setInt(1, id);

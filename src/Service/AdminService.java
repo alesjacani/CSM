@@ -80,17 +80,20 @@ public class AdminService {
   	    //shtimi i prof ne tabelen e kursit
   	    //marrja e id se profesorit te shtuar
   	 public static void addProfessor(Professor professor,Courses course) {
-  	   if (usersRepository.professorExists(professor)) {
-  		throw new ProjectException(Messages.PROFESSOR_EXISTS.getMessage());
-  	    }  //else {
+  		 
+  	 if (usersRepository.professorExistsOnlyUsername(professor)) {
+  	     throw new ProjectException(Messages.PROFESSOR_EXISTS.getMessage());
+  	  }  
+  	 else {
   	    	     //   if(usersRepository.courseHasProfessor(course)) {
   	    		//         throw new ProjectException(Messages.COURSE_HAS_PROFESSOR.getMessage());
   	    	     //      }else {
                         usersRepository.addProfessor(professor);
                         usersRepository.getProfessorIdByUsername(professor);
-                        usersRepository.addProfIntoCourse(professor, course);
+                        Courses c =usersRepository.getCourseByName(course.getCourseName());
+                        usersRepository.addProfIntoCourse(professor, c);
                      //         }
-              //  } 
+              } 
     }
   	 
   	 public static void courseHasProf(Courses course) {
@@ -99,7 +102,8 @@ public class AdminService {
   		}
   		
   	 }
-  	 /////////////////////////////////////////////////////////////////////
+  
+  	 
   	 public static Professor authenticateProfessor(Professor professor) {
   		 if(usersRepository.professorExists(professor)) {
   			usersRepository.getProfessorByUsername(professor);
@@ -108,8 +112,17 @@ public class AdminService {
   			 throw new ProjectException(Messages.WRONG_USERNAME_OR_PASSWORD.getMessage());
   		 }
   	 }
-  	 /////////////////////////////////////////////////////////////////////
-  	 
+ ////////
+  	 public static Professor authenticateProfessorByUsername(Professor professor) {
+  		 if(usersRepository.professorExistsOnlyUsername(professor)) {
+  			 usersRepository.getProfessorByUsername(professor);
+  			 return professor;
+  		 }
+  		 else {
+  			 throw new ProjectException(Messages.PROFESSOR_DOES_NOT_EXISTS.getMessage());
+  		 }
+  	 }
+  //////	 
 	 public static void addProfIntoCourse(Professor professor, Courses course) {
 		 if(usersRepository.courseHasProfessor(course)) {
 	    		    throw new ProjectException(Messages.COURSE_HAS_PROFESSOR.getMessage());
@@ -127,30 +140,26 @@ public class AdminService {
   	 public static void editProfessorDetails(Professor professor) {
   		 if(usersRepository.professorExistsOnlyUsername(professor)) {
   			 throw new ProjectException("TRY ANOTHER USERNAME!");
-  		 }
+  		 }else {
   		 usersRepository.editProfessorDetails(professor);
-  	 }
+  	 }}
   	  
   	
-  	 
+  	 /////////////////////////////////////////////////////////////
   	 public static void deleteProfessorByUsername(Professor professor){
   		 if(usersRepository.professorExistsOnlyUsername(professor)) {
+  			int id = usersRepository.getProfessorIdByUsername(professor);
+  			 usersRepository.deleteProfessorByUsername(professor);
   			 
-  			 usersRepository.getProfessorByUsername(professor);
-  			 String username = professor.getUsernameProf();
-  		     int id = professor.getIdProfessor();
-  			 usersRepository.deleteProfessorByUsername(username);
   			 usersRepository.deleteProfessorFromCourse(id);
-  		 }
-  		 else {
-  			 throw new ProjectException(Messages.PROFESSOR_DOES_NOT_EXISTS.getMessage());
-  		 }
+  		}else {
+  			throw new ProjectException(Messages.PROFESSOR_DOES_NOT_EXISTS.getMessage());
+  		}
+  		    
+  			// usersRepository.deleteProfessorFromCourse(p);
+  		
   	 }
-  	 
+  	 ///////////////////////////////////////////////////////////////////
   	 
  
-  	/*public static void getCourseNameByProfessorUsername(Courses course, Professor professor){
-  		
-	usersRepository.getCourseNameByProfessorUsername(course,professor);
-	}*/
 }//end of CLASS COURSESERVICE
