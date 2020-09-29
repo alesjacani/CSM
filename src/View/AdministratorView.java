@@ -1,6 +1,6 @@
 package View;
 
-import java.awt.List;
+import java.util.List;
 import java.security.acl.LastOwnerException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -26,15 +26,15 @@ public class AdministratorView {
 		System.out.println("***  WELCOME TO ADMINISTRATOR PAGE "+ admin.getFirstNameAdmin() +"  "+ admin.getLastNameAdmin() +". ***");
 		System.out.println("Type a number to continue.\n");
 		
-		System.out.println("For Course                    For Professor                              For Student                  GO BACK");
+		System.out.println("For Course                    For Professor                        For Student                    GO BACK");
 		System.out.println("------------------------------------------------------------------------------------------------------------------");
-		System.out.println("1-Add Course                7- Add professor                           11- Edit student          14- GO BACK TO LOGIN PAGE." );
-		System.out.println("2-Delete all Courses        8- Edit professor                          12- Delete student");
-		System.out.println("3-View course details       9- Delete professor                        13- List students.");
-		System.out.println("  with specific id          10- List professors.                                        ");
-		System.out.println("4-List all courses                                                                   ");
-		System.out.println("5-Delete course \nby specific id ");
-	    System.out.println("6-Add a professor into a course.");
+		System.out.println("1-Add Course                7- Add professor                       12- Edit student              17- GO BACK TO LOGIN PAGE." );
+		System.out.println("2-Delete all Courses        8- Edit professor                      13- Delete by username");
+		System.out.println("3-View course details       9- Delete by username                  14- List students.");
+		System.out.println("  by Course Name            10-List all professors.                    15-                               ");
+		System.out.println("4-List all courses                                                 16-                  ");
+		System.out.println("5-Delete course \nby course name                                      ");
+	    System.out.println("6-Add a actual professor\n into a course.");
 		
 		try {
 			Courses course = new Courses();
@@ -52,19 +52,19 @@ public class AdministratorView {
 			break;
 	    
 		case 2 :
-		deleteCourse();
+		    deleteCourse();
 			break;
 			
 		case 3 :
-			getCoursebyId();
+			getCoursebyName();
 			break;
 			
 		case 4 :
-		listAllCourses();
+		    listAllCourses();
 			break;
 			
 		case 5 :
-		//deleteCoursebyId();
+		    deleteCoursebyName();
 			break;
 			
 		case 6 :
@@ -76,11 +76,11 @@ public class AdministratorView {
 			break;
 			
 		case 8 :
-			
+			editProfessorDetails();
 			break;
 			
 		case 9:
-		
+		   deleteProfessorByUsername();
 			break;
 		case 10:
 			listAllProfessors();
@@ -95,15 +95,25 @@ public class AdministratorView {
 			
 			break;
 		case 14:
-			new Menu().start();
+		
 			break;
+        case 15:
+			
+			break;
+        case 16:
+	    
+	        break;
+        case 17:
+        	new Menu().start();
+			break;
+ 
 		default:
-				System.out.println("******   Please write ONLY INTEGERS FROM 1-14.    ****** \n \n");
+				System.out.println("******   Please write ONLY INTEGERS FROM 1-16.    ****** \n \n");
 				adminMenu();
 				//try ex ??????????
 		}
 } catch (InputMismatchException e) {
-			System.out.println("Please write ONLY INTEGERS FROM 1-14. ");
+			System.out.println("Please write ONLY INTEGERS FROM 1-16. ");
 			adminMenu();
 		}
 		
@@ -121,44 +131,35 @@ public class AdministratorView {
 			System.out.println("Write the name of course.");
 			String coursename = sc.nextLine();
 			course.setCourseName(coursename);
+			
+			
+			
 			AdminService.addCourse(course);
-		    AdminService.getCourseIdyName(course);                            
+		     
+		    
 			System.out.printf ("You just add a new course with name %s with id %d ", course.getCourseName(), course.getCourseId());
 			adminMenu();
-			/*for(Courses c : CourseService.listAllCourses()) {
-					if (coursename.equalsIgnoreCase(c.getCourseName()))  { 
-						System.out.println("This course already exists.");
-						addCourse();	
-					 }
-					else {
-					CourseService.addCourse(course);
-				    CourseService.getCourseIdyName(course);                            
-					System.out.printf ("You just add a new course with name %s with id %d ", course.getCourseName(), course.getCourseId());
-							
-							adminMenu();
-							}
-			}*/
-		} catch (ProjectException exception) {//string merr dhe int ???????
-			System.out.println(exception);
+
+        } catch (ProjectException exception) {//string merr dhe int ???????
+			System.out.printf(" \n %s \n\n",exception.getMessage());
 			addCourse();
-		} finally {
+		} catch (InputMismatchException exception) {
+	        System.out.println("\"Write word OR number in  requested details please.\n");
+		    addCourse();
+		}finally {
 			sc.close();
 		}
-
-	}//end of addcourse
+}//end of addcourse
+	
+	
 	
 	public void deleteCourse() {
-		
 		Scanner sc = new Scanner(System.in);
 		try {
 			Courses course =new Courses();
-			
 			AdminService.deleteCourse(course);
-			
 			System.out.printf("YOU DELETED ALL COURSES.");
-	      
-			adminMenu();
-			
+	      adminMenu();
 		} catch (ProjectException exception) {
 			System.out.println(exception.getMessage());
 		} finally {
@@ -168,104 +169,115 @@ public class AdministratorView {
 	}
 	
 	
-	public void deleteCoursebyId(Courses course, Professor professor) {
-		System.out.println("Give course's id to delete it:");
+	
+	public void deleteCoursebyName() {
 		Scanner sc = new Scanner(System.in);
+		Courses course=new Courses();
 		try {
-		//	Courses course = new Courses();
-
-			int courseId= sc.nextInt();
-			course.setCourseId(courseId) ;
-			for(Courses c : AdminService.listAllCourses()) {
-				if (courseId== course.getCourseId()) {
-					AdminService.deleteCourseById(c.getCourseId());
-					System.out.printf("Course with name %s and id %d is deleted.", c.getCourseName(),c.getCourseId());
-					adminMenu();
-				}
-				 System.out.println("THIS ID DOES NOT EXITS. TRY AGAIN.");
-				deleteCoursebyId(course,professor);			
-			}
-			 
-		}catch (InputMismatchException exception) {
-	        System.out.println("Write only integers please.");
-		    deleteCoursebyId(course,professor);
+	        
+			System.out.println("Please give course name: ");
 			
-			}finally {
+			course.setCourseName(sc.next()) ;
+		    Courses c = AdminService.authenticateCourse(course);
+		     
+			AdminService.deleteCourseByName(c);
+			System.out.println("Course was successfully deleted!");
+			adminMenu();
+				
+		}catch (InputMismatchException exception) {
+	        System.out.println("\"Write word OR number in  requested details please.\n");
+		    deleteCoursebyName();
+		}catch (ProjectException exception) {
+			System.out.println(exception.getMessage());
+			 deleteCoursebyName();
+		}finally {
 				sc.close();
 			}
-		
 	}
 	
 	
-	public void  getCoursebyId () {
+	
+	public void  getCoursebyName () {
 		
-		
-		System.out.println("Give id to see the course details:");
 		Scanner sc = new Scanner(System.in);
 		
 		try {
 			Courses course =new Courses();
+			System.out.print("Give course NAME:");
 			
+			course.setCourseName(sc.next()) ;
+			
+			System.out.print("Give course ID to see the course details: ");
 			int courseId= sc.nextInt();
-			course.setCourseId(courseId) ;
+			course.setCourseId(courseId);
+			Courses c = AdminService.authenticateCourse(course);
 			
-			
-				 for (Courses c : AdminService.getCourseByID(course.getCourseId())) {
-				 if (courseId ==course.getCourseId()) {
-						System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s.", c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),c.getProfessorList());
-						adminMenu();
-					}
-				 }
-				 System.out.println("THIS ID DOES NOT EXITS. TRY AGAIN.");
-				 getCoursebyId();			
-				 
-				 } catch (InputMismatchException exception) {
-        System.out.println("Write only integers please.");
-		getCoursebyId();
-		
-		} finally {
+            Professor p= ProfessorService.getProfByCourseName(course.getCourseName());
+	        System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s %s.", 
+	        		          c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),p.getFirstNameProf(),p.getLastNameProf());
+	        adminMenu();
+	
+		}catch (InputMismatchException exception) {
+        System.out.println("Write word OR number in  requested details please.\n");
+		getCoursebyName();
+		}catch (ProjectException exception) {
+			System.out.println(exception.getMessage());
+			getCoursebyName();
+		}finally {
 		sc.close();
 		}
 		
 	}//end of getcoursebyid
 	
+	
+	
+	
+	
 	public void listAllCourses() {
 		for (Courses c : AdminService.listAllCourses() ) {
 			for (Professor p :AdminService.listAllProfessorById(c.getProfessorId())) {
-System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s. \n \n ", c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(), p.getFirstNameProf());
+            System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s. \n \n ",
+		          c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(), p.getFirstNameProf());
 			 }
 		}
 	adminMenu();
 	}
 	
 	 
+	
 	public void listAllProfessors() {
 		for (Professor p: AdminService.listAllProfessors()) {
-			System.out.printf("\nProfessor %s %s , with username %s teaching in course/s:\n",p.getFirstNameProf(),p.getLastNameProf(),p.getUsernameProf());
+			System.out.printf("\nProfessor %s %s , with username %s teaching in course/s:\n",
+					         p.getFirstNameProf(),p.getLastNameProf(),p.getUsernameProf());
 
 			for (Courses c : AdminService.getCourseByProfessorId(p.getIdProfessor())) {
 	//System.out.printf("\nProfessor %s %s , with username %s teaching in course/s:\n",p.getFirstNameProf(),p.getLastNameProf(),p.getUsernameProf());
 				System.out.printf("-%s\n",c.getCourseName());
 			}
 		}
+		adminMenu();
 	}
+	
+	
+	
 	public void addProfessorIntoActualCourse() {
-		
 		System.out.println(" * ADD Professor Category. * ");
-		
-
 		Scanner sc = new Scanner(System.in);
 		Professor professor = new Professor();
 		Courses course = new Courses();
 		try {
 			
-			System.out.println("Please add professor's details.");
+			System.out.println("Please add professor's details.\n");
 			
-			System.out.print("Please write in which course do you want to add the professor. -->  ");
 			
-			course.setCourseId(sc.nextInt());
 			
-			System.out.print("Give name: ");
+			System.out.print("Please write in which course NAME do you want to add the professor. -->");
+			course.setCourseName(sc.next());
+			
+			AdminService.authenticateCourse(course);
+		    AdminService.courseHasProf(course);
+			
+		    System.out.print("Give name: ");
 			professor.setFirstNameProf(sc.next());
 			
 			System.out.print("Give last name: "); 
@@ -278,47 +290,138 @@ System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s ,
 			professor.setPasswordProf((sc.next()));
 			
 			
-			AdminService.addProfessor(professor);
-			AdminService.getProfIdbyUsername(professor);
-			
-			for (Courses c : AdminService.getCourseByID(course.getCourseId())) {
-
-		
-			AdminService.addProfIntoCourse(professor, course);
-		
-		    System.out.printf("<<<<<<<<<< You just added professor %s %s with id %d. >>>>>>>>>>", professor.getFirstNameProf() , professor.getLastNameProf(),professor.getIdProfessor());
-		    System.out.printf("into course %s",c.getCourseName());
+			AdminService.addProfessor(professor,course);
+		    System.out.printf("<<<<<<<<<< You just added professor %s %s with id %d ", professor.getFirstNameProf() , professor.getLastNameProf(),professor.getIdProfessor());
+		    System.out.printf("into course %s . >>>>>>>>>>",course.getCourseName());
 			adminMenu();
-			 }
+			 
 		} catch (ProjectException exception) {
-			System.out.println(">>>> "+exception.getMessage()+ "\nPlease try to add another professor <<<<\n");
-			
+			System.out.println(exception.getMessage());
 			addProfessorIntoActualCourse();
-		}
-		finally {
+		}finally {
 			sc.close();
 		}
 		
-}//end of addProfessor();*/
+}//end of addProfessor()
+	
+	
+	
 	public void addActualProfessorIntoCourseByIDs() {
+		
 		Scanner input = new Scanner (System.in);
 		Professor professor = new Professor();
 		Courses course = new Courses();
-		System.out.print("Give the course id you want to add the professor: ");
-		course.setCourseId(input.nextInt());
-		System.out.print("Give the professor id: ");
-		professor.setIdProfessor(input.nextInt());
+		try {
+			
+			System.out.print("Give the professor id: ");
+			professor.setIdProfessor(input.nextInt());
+			
+			System.out.print("Give the course id you want to add the professor: ");
+			course.setCourseId(input.nextInt());
+			System.out.print("Give the course Name you want to add the professor: ");
+			course.setCourseName(input.next());
+			AdminService.authenticateCourse(course);
+		    AdminService.courseHasProf(course);
+		    
+	
+			AdminService.addProfIntoCourse(professor, course);
+				
+		    Professor p=ProfessorService.getProfByCourseName(course.getCourseName());
+				
+		   // AdminService.getCourseByProfessorId(professor.getIdProfessor());
+				
+			System.out.printf("You just added professor: %s %s into %s course.",p.getFirstNameProf(),p.getLastNameProf(),course.getCourseName());
 		
-		AdminService.addProfIntoCourse(professor, course);
+			adminMenu();
+		} catch (ProjectException exception) {
+			System.out.printf("\n%s\n\n",exception.getMessage());
+			addActualProfessorIntoCourseByIDs();
+		}catch (InputMismatchException exception) {
+	        System.out.println("Write word OR number in  requested details please.\n");
+	        addActualProfessorIntoCourseByIDs();
+			}finally {
+				input.close();
+			}
 		
-		for (Professor p :AdminService.listAllProfessorById(professor.getIdProfessor())) {
-			for (Courses c : AdminService.getCourseByID(course.getCourseId()) ) {
+		
+		
+		
+		
+	//	for (Professor p :AdminService.listAllProfessorById(professor.getIdProfessor())) {
+			/*for (Courses c : AdminService.getCourseByID(course.getCourseId()) ) {
 System.out.printf("You just added professor: %s %s into %s course.",p.getFirstNameProf(),p.getLastNameProf(),c.getCourseName());
 
-			 }
-		}
+			 }*/
+	//	}
+		
+	}//end
+	
+	//akoma pa ia dhen te dhenat profes, nqs ka ber ndonje gabim ne te shkruar.
+	
+	public void editProfessorDetails() {
+		Scanner sc =new Scanner(System.in);
+		Professor professor = new Professor();
+		try {
+			System.out.println("Enter username for the professor you want to edit: ");
+			
+			professor.setUsernameProf(sc.next());
+			
+			System.out.println("Enter the professor password you want to edit: ");
+			professor.setPasswordProf(sc.next());
+			
+			AdminService.authenticateProfessor(professor);
+			
+			System.out.println("ENTER NEW NAME: ");
+			professor.setFirstNameProf(sc.next());
+			
+			System.out.println("ENTER NEW SURNAME:");
+			professor.setLastNameProf(sc.next());
+			
+			System.out.println("ENTER NEW USERNAME");
+			professor.setUsernameProf(sc.next());
+			
+			AdminService.editProfessorDetails(professor);
+			
+			System.out.println("You succeffully just edited professor details.");
+			adminMenu();
+			
+		} catch (ProjectException exception) {
+			System.out.println(exception.getMessage());
+			editProfessorDetails();
+		}catch (InputMismatchException exception) {
+	        System.out.println("Write word OR number in  requested details please.\n");
+			editProfessorDetails();
+			}finally {
+				sc.close();
+			}
+		
+		
 		
 	}
+	
+	
+	
+	public void deleteProfessorByUsername() {
+		Scanner sc = new Scanner(System.in);
+		Professor professor =new Professor();
+		try {
+	        
+			System.out.println("Please give professor username: ");
+			professor.setFirstNameProf(sc.next());
+			
+		    AdminService.deleteProfessorByUsername(professor);
+			System.out.println("Professor was successfully deleted!");
+			adminMenu();
+				
+		}
+		catch (ProjectException exception) {
+			System.out.println(exception.getMessage());
+			deleteProfessorByUsername();
+		}finally {
+				sc.close();
+			}
+}
+	
 	
 
 

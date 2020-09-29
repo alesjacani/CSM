@@ -1,6 +1,7 @@
 package View;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 import Accounts.Professor;
@@ -9,16 +10,17 @@ import Course.Courses;
 import Exceptions.ProjectException;
 import Service.AdminService;
 import Service.ProfessorService;
+import Util.Messages;
 
 public class ProfessorView {
 	public void professorMenu(Professor professor) {
 		System.out.println("\n");
 
 		System.out.printf("<<<<<<<<<< WELCOME TO PROFESSOR MENU %S %S  >>>>>>>>>>\n", professor.getFirstNameProf(),professor.getLastNameProf());
-		System.out.println("You are added to the course/courses below:");
+		System.out.println("You are added to the course/courses  below:");
 		//for (Professor p :AdminService.listAllProfessorById(professor.getIdProfessor())) {
 			for (Courses c : AdminService.getCourseByProfessorId(professor.getIdProfessor()) ) {
-				System.out.println(c.getCourseName());
+				System.out.printf("-%s   with id  %d.\n",c.getCourseName(),c.getCourseId());
 			 }
 	
 		
@@ -51,7 +53,7 @@ public class ProfessorView {
 			break;
 			
 		case 3:
-			new Menu().start();
+		
 			break;
 		case 4 :
 			break;
@@ -60,8 +62,10 @@ public class ProfessorView {
 		case 6 :
 			break;
 		case 7 :
+			editCourseDetails();
 			break;
 		case 8 :
+			new Menu().start();
 			break;
 		default:
 			System.out.println("Please write ONLY INTEGERS FROM 1-8. ");
@@ -89,11 +93,13 @@ public class ProfessorView {
 		try {
 		AdminService.authenticateProfessor(prof);
 		
-		//System.out.println("Enter your new password: ");
-		//prof.setPasswordProf(input.next());
+		System.out.println("Enter your new password: ");
+		prof.setPasswordProf(input.next());
 		
-		//ProfessorService.changePassword(prof.getUsernameProf(), prof.getPasswordProf());
+		ProfessorService.changePassword(prof.getUsernameProf(), prof.getPasswordProf());
+		System.out.println("Your password is changed!!!! :)");
 		
+		professorMenu(prof);
 		}catch (ProjectException exception) {
 			System.out.println(">>>> "+exception.getMessage());
 			ChangePassword();
@@ -110,45 +116,133 @@ public void addStudentIntoActualCourse() {
 		Scanner sc = new Scanner(System.in);
 		Student student = new Student();
 		Courses course = new Courses();
-		Professor professor= new Professor();
+		Professor p = new Professor();
+		
+	
 		try {
 			
-			System.out.println("Please add student's details.");
+			//System.out.println("Please add student's details.");
+			System.out.print("Please enter your username: ");
+			p.setUsernameProf(sc.next());
 			
-			System.out.print("Please write course id in which you want to add the student. -->  ");
-			
-			course.setCourseId(sc.nextInt());
-			
-			System.out.print("Give name: ");
-			student.setFirstNameStudent(sc.next());
-			
-			System.out.print("Give last name: "); 
-			student.setLastNameStudent(sc.next());
-			
-			System.out.print("Give usernamename: ");
-			student.setUserNameStudent(sc.next());
-			
-			System.out.print("Give password: ");
-			student.setPasswordStudent(sc.next());
+			System.out.print("Please write course NAME in which you want to add the student. -->  ");
+			course.setCourseName(sc.next());
 			
 			
-			ProfessorService.addStudent(student);
-			ProfessorService.getIdStudentByUsername(student);
 			
-			for (Courses c : AdminService.getCourseByID(course.getCourseId())) {
-            ProfessorService.addStudentCoursebyIds(student.getIdStudent(), course.getCourseId());
-		    System.out.printf("<<<<<<<<<< You just added student %s %s with id %d. >>>>>>>>>>", student.getFirstNameStudent() , student.getLastNameStudent(),student.getIdStudent());
-		    System.out.printf("into course %s",c.getCourseName());
-			}
+			
+           List<String> coursesName = ProfessorService.getCourseNameByProfessorUsername(p.getUsernameProf());
+			
+           
+			if (coursesName.contains(course.getCourseName()) ) {
+				
+				System.out.print("Give name: ");
+				student.setFirstNameStudent(sc.next());
+		
+				System.out.print("Give last name: "); 
+				student.setLastNameStudent(sc.next());
+				
+				System.out.print("Give usernamename: ");
+				student.setUserNameStudent(sc.next());
+				
+				System.out.print("Give password: ");
+				student.setPasswordStudent(sc.next());
+				
+		     	ProfessorService.addStudent(student,course);
+		    	//ProfessorService.getIdStudentByUsername(student);
+			
+			 /*   for (Courses c : AdminService.getCourseByID(course.getCourseId())) {
+                     ProfessorService.addStudentCoursebyIds(student.getIdStudent(), course.getCourseId());
+		   */
+                     System.out.printf("<<<<<<<<<< You just added student %s %s with id %d ", student.getFirstNameStudent() , student.getLastNameStudent(),student.getIdStudent());
+		             System.out.printf("into course %s . >>>>>>>>>>",course.getCourseName());
+	        //                                }
+			
+			Professor professor = ProfessorService.getProfByCourseName(course.getCourseName());
 			professorMenu(professor);
+			}
+			
+			else {
+				System.out.printf("\n %s \n\n",Messages.INVALID_COURSE_NAME.getMessage());
+				addStudentIntoActualCourse();
+			}
+			
+			
+			
+			
 		} catch (ProjectException exception) {
-			System.out.println(">>>> "+exception.getMessage()+ "\nPlease try to add another student <<<<\n");
+			System.out.println(exception.getMessage());
 			
 			addStudentIntoActualCourse();
-		}
+		}catch (InputMismatchException exception) {
+	        System.out.println("Write word OR number in  requested details please.\n");
+			addStudentIntoActualCourse();
+			
+			
+			}
 		finally {
 			sc.close();
 		}
 		
 }
+public  void editCourseDetails() {
+	
+	Scanner input = new Scanner (System.in);
+	Courses course = new Courses();
+	Professor professor = new Professor();
+	
+	System.out.println("Give username: ");
+	professor.setUsernameProf(input.next());
+	
+	System.out.println("Give course NAME:");
+	course.setCourseName(input.next());
+	
+	AdminService.authenticateCourse(course);
+	
+	List<String> coursesName = ProfessorService.getCourseNameByProfessorUsername(professor.getUsernameProf());
+	
+	
+	try{
+	
+		if (coursesName.contains(course.getCourseName()) ) {
+			
+			System.out.print("Add course description: ");
+		    course.setDesciption(input.next());
+		    System.out.print("Add course duration time: ");
+		    course.setDurationTime(input.next());
+		    
+		    ProfessorService.editCourseDetails(course.getDesciption(), course.getDurationTime(), course.getCourseName());
+		 
+		    Professor p = ProfessorService.getProfByCourseName(course.getCourseName());
+			professorMenu(p);
+		    
+		}
+		
+		else {
+			System.out.println(Messages.INVALID_COURSE_NAME.getMessage());
+		    editCourseDetails();
+	}
+	
+	}
+	catch (ProjectException exception) {
+		System.out.println(exception.getMessage());
+		
+		editCourseDetails();
+	}
+}//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }//end of CLASS

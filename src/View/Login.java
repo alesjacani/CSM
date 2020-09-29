@@ -129,6 +129,7 @@ public void professorLogin() {
 	
 	System.out.print("Write your password: ");
 	professor.setPasswordProf(input.next());
+	
 	try {
 		AdminService.authenticateProfessor(professor);
     

@@ -18,10 +18,10 @@ public class UsersRepository {
 	private final String ADD_COURSE =  "INSERT INTO course (course_name) VALUES (?)";
     private final String GET_ID_OF_COURSE= "SELECT course_id FROM course WHERE course_name=?";
     private final String DELETE_ALL_COURSE = "DELETE FROM course";
-    private final String GET_COURSE_BY_ID = "SELECT * FROM course where course_id = ?";
+    private final String GET_COURSE_BY_NAME = "SELECT * FROM course where course_name = ?";
     private final String GET_COURSE_BY_PROFESSOR_ID = "SELECT * FROM course where professor_id = ?";
     private final String COURSE_EXIST = "SELECT COUNT (*) FROM course WHERE course_name=?";
-    private final String DELETE_COURSE_BY_ID = "DELETE FROM course WHERE course_id=?";
+    private final String DELETE_COURSE_BY_NAME = "DELETE FROM course WHERE course_name=?";
     private final String LIST_ALL_COURSE = "SELECT * FROM course INNER JOIN professor ON course.professor_id=professor.professor_id";
     
     private final String ADD_PROFESSOR="INSERT INTO professor (professor_name, professor_surname,professor_username,professor_password) VALUES (?,?,?,?)";
@@ -29,12 +29,18 @@ public class UsersRepository {
     private final String ADD_PROF_INTO_A_COURSE= "UPDATE course SET professor_id=? WHERE course_id=?";
     
    
-    private final String PROFESSOR_EXIST="SELECT COUNT (*) FROM  professor WHERE professor_username=?";
-    private final String GET_PROF_BY_USERNAME_AND_PASSWORD="SELECT * FROM professor WHERE professor_username=? AND professor_password=?";
-    private final String GET_COURSE_NAME_BY_PROFESSOR_USERNAME="SELECT course.course_name FROM course INNER JOIN professor ON course.professor_id= professor.professor_id WHERE professor.professor_username=?";
+    private final String PROFESSOR_EXIST="SELECT COUNT (*) FROM  professor WHERE professor_username=? AND professor_password=?";
+    private final String PROFESSOR_EXIST2="SELECT COUNT (*) FROM  professor WHERE professor_username=?";
+    private final String GET_PROF_BY_USERNAME="SELECT * FROM professor WHERE professor_username=?";
+    //private final String GET_COURSE_NAME_BY_PROFESSOR_USERNAME="SELECT course.course_name FROM course INNER JOIN professor ON course.professor_id= professor.professor_id WHERE professor.professor_username=?";
     private final String LIST_ALL_PROFESSORS_BY_ID= "SELECT * FROM professor WHERE professor_id=?";
     private final String LIST_ALL_PROFESSORS="SELECT * FROM professor";
     
+   private final String COURSE_HAS_PROF="SELECT COUNT (professor_id) FROM course WHERE course_name=?";
+   private final String EDIT_PROFESSOR_DETAILS="UPDATE professor SET professor_name=?,professor_surname=?,professor_username=? WHERE professor_id=?";
+   private final String DELETE_PROFESSOR_BY_USERNAME="DELETE FROM professor WHERE professor_username=?";
+   private final String DELETE_PROFESSOR_FROM_COURSE="DELETE FROM course WHERE professor_id=?";
+   
 	public void addCourse(Courses course) {
 		try (Connection connection = ConnectionDb.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(ADD_COURSE))
@@ -54,6 +60,7 @@ public class UsersRepository {
 		try(Connection connection = ConnectionDb.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(COURSE_EXIST)) {
 			preparedStatement.setString(1, course.getCourseName());
+			
 			ResultSet rs = preparedStatement.executeQuery();
 			while(rs.next()) {
 				if(rs.getInt(1)==0) {
@@ -71,30 +78,33 @@ public class UsersRepository {
 		return false;
 	}
 	
+	
+public boolean courseHasProfessor(Courses course) {
+		
+		try(Connection connection = ConnectionDb.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(COURSE_HAS_PROF)) {
+			preparedStatement.setString(1, course.getCourseName());
+			
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				if(rs.getInt(1)==0) {
+					 return false;
+				}
+				else {
+					return true;
+				}
+			}
+			
+			
+		} catch (SQLException e) {
+			System.out.println("error " + e);
+		}
+		return false;
+	}
 
   
   
-  
-	public int getIdOfCourseByName (Courses course) {
-		try (Connection connection =ConnectionDb.getConnection();
-				PreparedStatement preparedSt = connection.prepareStatement(GET_ID_OF_COURSE);){
-			
-		    preparedSt.setString(1,course.getCourseName());  
-		    ResultSet rs = preparedSt.executeQuery();
-		
-		    
-		    while(rs.next()) {
-		  	course.setCourseId(rs.getInt("course_id"));
-		    }
-        return course.getCourseId();
-        
-		} catch (SQLException e) {
-			System.out.println("error " + e);
-			return 0;
-		}
-		
-		
-	}//end of getIdOfCourseByName
+
 	
 	
 	
@@ -110,23 +120,23 @@ public class UsersRepository {
 	}//end of deleteCourse 
 	
 
-	 public void deleteCourseById(Integer courseId) {
+	 public void deleteCourseByName(String courseName) {
 		 try (Connection connection = ConnectionDb.getConnection();
-			  PreparedStatement preparedSt= connection.prepareStatement(DELETE_COURSE_BY_ID);) {
-			    preparedSt.setInt(1, courseId);
+			  PreparedStatement preparedSt= connection.prepareStatement(DELETE_COURSE_BY_NAME);) {
+			    preparedSt.setString(1, courseName);
 				preparedSt.executeUpdate();
 			}
 		 catch (SQLException e) {
 				System.out.println("error " + e);
 			}
-	 }//end of delete by id
+	 }//end of delete by n
 		
-	public List<Courses> getCourseById(Integer courseId) {
-	List <Courses> courses = new ArrayList();
+	public Courses getCourseByName(String courseName) {
+	
 		try (Connection connection = ConnectionDb.getConnection();
-				PreparedStatement preparedSt = connection.prepareStatement(GET_COURSE_BY_ID);) {
+				PreparedStatement preparedSt = connection.prepareStatement(GET_COURSE_BY_NAME);) {
 			
-			preparedSt.setInt(1, courseId);
+			preparedSt.setString(1, courseName);
 			ResultSet rs = preparedSt.executeQuery();
 			Courses course = new Courses();
 			while (rs.next()) {
@@ -135,10 +145,10 @@ public class UsersRepository {
 				course.setCourseName(rs.getString("course_name"));
 				course.setDesciption(rs.getString("course_description"));
 				course.setDurationTime(rs.getString("course_duration_time"));
-			    courses.add(course);
+			    
 				//course.setProfessorList(rs.getInt("professor_id"));
 			}
-			return courses;
+			return course;
 			
 		} catch (SQLException e) {
 			System.out.println("error " + e);
@@ -312,6 +322,7 @@ public class UsersRepository {
 		try(Connection connection = ConnectionDb.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(PROFESSOR_EXIST);) {
 			preparedStatement.setString(1, professor.getUsernameProf());
+			preparedStatement.setString(2, professor.getPasswordProf());
 			ResultSet rs = preparedStatement.executeQuery();
 			while(rs.next()) {
 				if(rs.getInt(1)==0) {
@@ -329,6 +340,29 @@ public class UsersRepository {
 		return false;
 	}
 	
+	
+	
+	public boolean professorExistsOnlyUsername(Professor professor) {
+		try(Connection connection = ConnectionDb.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(PROFESSOR_EXIST2);) {
+			preparedStatement.setString(1, professor.getUsernameProf());
+			
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				if(rs.getInt(1)==0) {
+					 return false;
+				}
+				else {
+					return true;
+				}
+			}
+			
+			
+		} catch (SQLException e) {
+			System.out.println("error " + e);
+		}
+		return false;
+	}
 	public int getProfessorIdByUsername (Professor professor) {
 		try (Connection connection =ConnectionDb.getConnection();
 				PreparedStatement preparedSt = connection.prepareStatement(GET_ID_OF_PROFESSOR);){
@@ -364,14 +398,29 @@ public class UsersRepository {
 	}//end of addProfIntoCourse
 		
 	
+public void editProfessorDetails(Professor professor) {
+	try( Connection connection =ConnectionDb.getConnection();
+			PreparedStatement preparedSt = connection.prepareStatement(EDIT_PROFESSOR_DETAILS);) {
+		
+		preparedSt.setString(1, professor.getFirstNameProf() );
+		preparedSt.setString(2, professor.getLastNameProf()) ;
+		preparedSt.setString(3, professor.getUsernameProf() );
+		preparedSt.setInt(4, professor.getIdProfessor());
+		preparedSt.executeUpdate();
+	}catch (SQLException e) {
+		System.out.println("error " + e);
+		
+	}
+}
 	
-	public Professor getProfessorByUsernameAndPassword(Professor professor) {
+	
+	public Professor getProfessorByUsername(Professor professor) {
 	//	List <Professor> professors = new ArrayList();
 			try (Connection connection = ConnectionDb.getConnection();
-					PreparedStatement preparedSt = connection.prepareStatement(GET_PROF_BY_USERNAME_AND_PASSWORD);) {
+					PreparedStatement preparedSt = connection.prepareStatement(GET_PROF_BY_USERNAME);) {
 				
 				preparedSt.setString(1, professor.getUsernameProf());
-				preparedSt.setString(2, professor.getPasswordProf());
+			
 				ResultSet rs = preparedSt.executeQuery();
 			
 				while (rs.next()) {
@@ -380,7 +429,6 @@ public class UsersRepository {
 					professor.setLastNameProf(rs.getString("professor_surname"));
 					professor.setUsernameProf(rs.getString("professor_username"));
 					professor.setPasswordProf(rs.getString("professor_password"));
-					
 				}
 				return professor;
 				
@@ -390,9 +438,37 @@ public class UsersRepository {
 			}
 		}//end of getProfessorByUsernameAndPassword
 	
+	
+	
+	
+	
+	 public void deleteProfessorByUsername(String username) {
+		 try (Connection connection = ConnectionDb.getConnection();
+			  PreparedStatement preparedSt= connection.prepareStatement(DELETE_PROFESSOR_BY_USERNAME);) {
+			    preparedSt.setString(1, username);
+				preparedSt.executeUpdate();
+			}
+		 catch (SQLException e) {
+				System.out.println("error " + e);
+			}
+	 }//end of delete by n
 
-	
-	
+	 
+	 
+	 
+	 
+	 
+	 public void deleteProfessorFromCourse(int id) {
+		 try (Connection connection = ConnectionDb.getConnection();
+			  PreparedStatement preparedSt= connection.prepareStatement(DELETE_PROFESSOR_FROM_COURSE);) {
+			    preparedSt.setInt(1, id);
+				preparedSt.executeUpdate();
+			}
+		 catch (SQLException e) {
+				System.out.println("error " + e);
+			}
+	 }//end of delete by n
+
 }//end of CLASS
 
 

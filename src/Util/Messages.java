@@ -2,13 +2,19 @@ package Util;
 
 public enum Messages {
 
-	PROFESSOR_EXISTS ("xxx The professor you are trying to add, exists. xxx \n"),
-	STUDENT_EXISTS ("The student you are trying to add, exists."),
+	PROFESSOR_EXISTS ("\nxxx The professor you are trying to add, exists. xxx \n"),
+	STUDENT_EXISTS ("\nXXX The student you are trying to add, exists. XXX\n"),
+	
+	PROFESSOR_DOES_NOT_EXISTS("\nXXX Professor does not exists. TRY AGAIN!  XXX\n"),
+	STUDENT_DOES_NOT_EXISTS("\nXXX Student does not exists. TRY AGAIN!  XXX\n"),
     MENU_MESSAGE ("Please write ONLY INTEGERS FROM 1-3. \nWrite number again. \n "),
-	COURSE_EXITS("The course you are trying to add already exits."),
-	COURSE_DOES_NOT_EXISTS("The course u are trying to delete does not exists."),
-	ID_DOES_NOT_EXISTS ("THIS ID DOES NOT EXITS."),
-	WRONG_USERNAME_OR_PASSWORD("XXX USERNAME OR PASSWORD WAS WRITTEN WRONG! PLEASE TRY AGAIN! XXX");
+    
+	COURSE_EXITS("\nXXX The course you are trying to add already exits. TRY AGAIN! XXX\n"),
+	COURSE_DOES_NOT_EXISTS("\nXXX The course does not exists. TRY AGAIN!  XXX\n"),
+	COURSE_HAS_PROFESSOR("\nXXX The course has already a professor! Write an another course. XXX\n"),
+	ID_DOES_NOT_EXISTS ("\nTHIS ID DOES NOT EXITS.\n"),
+	WRONG_USERNAME_OR_PASSWORD("\nXXX USERNAME OR PASSWORD WAS WRITTEN WRONG! PLEASE TRY AGAIN! XXX\n"),
+	INVALID_COURSE_NAME("\nXXX  INVALID COURSE NAME ! WRITE COURSE NAME THAT YOU TEACH. TRY AGAIN!!!!  XXX\n");
 	
 	private String message;
 	
