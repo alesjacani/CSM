@@ -2,6 +2,7 @@ package Service;
 
 import java.util.List;
 
+import Accounts.Grade;
 import Accounts.Professor;
 import Accounts.Student;
 import Course.Courses;
@@ -25,8 +26,9 @@ public static void changePassword(String username,String password) {
 		else {
 			professorRepository.addStudent(student);
 			professorRepository.getStudentByUsername(student);
-			professorRepository.addStudentCourseByIDs(student.getIdStudent(), course.getCourseId());
-			usersrRep.getCourseByName(course.getCourseName());
+			Courses c=usersrRep.getCourseByName(course.getCourseName());
+			professorRepository.addStudentCourseByIDs(student.getIdStudent(), c.getCourseId());
+			
 			
 		}
 	}
@@ -59,4 +61,13 @@ public static void changePassword(String username,String password) {
 	 }
 	 
 	 
+	 public static void gradeStudent (Courses course, Student student, Grade grade) {
+		//Student s =AdminService.getStudentBySId(student.getIdStudent());
+		//Student st = AdminService.getAllStudentByUsername(s.getUserNameStudent());
+		 if (professorRepository.studentExists(student)) {
+			 professorRepository.addGrade(course, student , grade);
+		 }else {
+			 throw new ProjectException(Messages.STUDENT_DOES_NOT_EXISTS.getMessage());
+		 }
+	 }
 }//end of CLASs

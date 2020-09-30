@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import Accounts.Grade;
 import Accounts.Professor;
 import Accounts.Student;
 import Course.Courses;
@@ -21,14 +22,14 @@ private String CHANGE_PASSWORD="UPDATE professor SET professor_password=? WHERE 
 private String ADD_STUDENT="INSERT INTO student (student_name, student_surname,student_username,student_password) VALUES (?,?,?,?)";
 private String ADD_STUDENT_COURSE = "INSERT INTO grade (student_id,course_id) VALUES (?,?)";
 
-private final String STUDENT_EXIST="SELECT COUNT (*) FROM  student WHERE student_username=? AND student_password=?";
+private final String STUDENT_EXIST="SELECT COUNT (*) FROM  student WHERE student_username=?";
 
 private final String GET_PROF_BY_COURSE_ID="SELECT * FROM professor INNER JOIN course ON professor.professor_id=course.professor_id WHERE course_name=?";
 
 private final String GET_COURSE_NAME_BY_PROFESSOR_USERNAME="SELECT course.course_name FROM course INNER JOIN professor ON course.professor_id= professor.professor_id WHERE professor.professor_username=?";
 
 private final String UPDATE_COURSE_DETAILS="UPDATE course SET course_description=?,course_duration_time=? WHERE course_name=?";
-private final String GRADE_STUDENT="UPDATE grade SET course_grade=? WHERE student_id=? AND course_id=?";
+private final String GRADE_STUDENT="UPDATE grade SET course_grade=? WHERE course_id=? AND student_id=?";
 private final String GET_STUDENT_BY_USERNAME="SELECT * FROM student WHERE student_username=?";
 
 public void changeProfessorPassword(String username, String password) {
@@ -66,7 +67,7 @@ public boolean studentExists(Student student) {
 	try(Connection connection = ConnectionDb.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(STUDENT_EXIST)) {
 		preparedStatement.setString(1, student.getUserNameStudent());
-		preparedStatement.setString(2, student.getPasswordStudent());
+		
 		ResultSet rs = preparedStatement.executeQuery();
 		while(rs.next()) {
 			if(rs.getInt(1)==0) {
@@ -165,8 +166,7 @@ public List<String> getCourseNameByProfessorUsername(String profUsername){
 				
 			 course.setCourseName(rs.getString("course_name"));
 		     name.add(course.getCourseName());
-			//??? si mund ta marr kete direkte nga kjo metod
-	        //course.setCourseName(rs.getString("course_name")); ??
+			
 			}
 		  return  name;
 	}catch (SQLException e) {
@@ -193,6 +193,18 @@ public void editCourseDetails(String description, String time,String courseName)
 }
 
 
+public void addGrade (Courses course, Student student,Grade grade) {
+	try( Connection connection =ConnectionDb.getConnection();
+	PreparedStatement preparedSt = connection.prepareStatement(GRADE_STUDENT);) {
+		preparedSt.setInt(1, grade.getGrade());
+		preparedSt.setInt(2, course.getCourseId() );
+		preparedSt.setInt(3, student.getIdStudent());
+		preparedSt.executeUpdate();
+	} catch (SQLException e) {
+		System.out.println("error " + e);
+		
+	}
 
+}
 
 }//end of CLASS

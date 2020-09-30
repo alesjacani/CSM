@@ -10,6 +10,7 @@ import java.util.List;
 import org.postgresql.translation.messages_bg;
 
 import Accounts.Professor;
+import Accounts.Student;
 import Course.Courses;
 import Exceptions.ProjectException;
 import Repository.UsersRepository;
@@ -43,21 +44,26 @@ public class AdminService {
        
       
       
-       public static Courses getCourseByID (String courseName) {
+       public static Courses getCourseByName (String courseName) {
     	    return usersRepository.getCourseByName(courseName);
 	    }  
        
-       public static List<Courses> getCourseByProfessorId (Integer id){
-    	   return usersRepository.getCourseByProfessorId(id);
+    
+       public static List<Courses> getCourseByProfessorUsername(String professorUsername){
+    	   return usersRepository.getCourseByProfessorUsername(professorUsername);
        }
       
-       public static void deleteCourse(Courses course) {
-		usersRepository.deleteCourse(course);
+       public static void deleteCourse() {
+		usersRepository.deleteCourse();
+		usersRepository.deleteRecordsGrade();
   	    }
        
    	   public static void deleteCourseByName(Courses course) {
    		 if(usersRepository.courseExists(course)) {
+   			  Courses c=usersRepository.getCourseByName(course.getCourseName());
    			  usersRepository.deleteCourseByName(course.getCourseName());
+   			  
+   			  usersRepository.deleteCourseFromGrade(c.getCourseId());
    		  }else {
    			  throw new ProjectException(Messages.COURSE_DOES_NOT_EXISTS.getMessage());
    		  }
@@ -67,15 +73,21 @@ public class AdminService {
   		return usersRepository.listAllCourses();
   	    }
   	
-  	    public static List<Professor> listAllProfessorById(Integer id){
-       return usersRepository.listAllProfessorById(id);
-  	    }
+  	  //  public static List<Professor> listAllProfessorById(Integer id){
+      // usersRepository.listAllProfessorByUsername(id);
+  	  // }
   	    
   	    public static List<Professor> listAllProfessors(){
   	    	return usersRepository.listAllProfessors();
   	    }
   	    
+  	    public static Student getStudentBySId(int studentId){
+  	    	return usersRepository.listAllStudentBySId(studentId);
+  	    	}
   	    
+  	    public static Student getAllStudentByUsername (String username) {
+  	    	return usersRepository.getAllStudentByUsername(username);
+  	    }
   	    //shtimi i te dhenave te proff ne professor table
   	    //shtimi i prof ne tabelen e kursit
   	    //marrja e id se profesorit te shtuar
@@ -147,15 +159,16 @@ public class AdminService {
   	
   	 /////////////////////////////////////////////////////////////
   	 public static void deleteProfessorByUsername(Professor professor){
-  		 if(usersRepository.professorExistsOnlyUsername(professor)) {
-  			int id = usersRepository.getProfessorIdByUsername(professor);
+  		if(usersRepository.professorExistsOnlyUsername(professor)) {
+  			int id= usersRepository.getProfessorIdByUsername(professor);
+  			usersRepository.deleteProfessorFromCourse(id);
   			 usersRepository.deleteProfessorByUsername(professor);
   			 
-  			 usersRepository.deleteProfessorFromCourse(id);
+  			 
   		}else {
   			throw new ProjectException(Messages.PROFESSOR_DOES_NOT_EXISTS.getMessage());
   		}
-  		    
+  		 
   			// usersRepository.deleteProfessorFromCourse(p);
   		
   	 }

@@ -4,6 +4,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import Accounts.Grade;
 import Accounts.Professor;
 import Accounts.Student;
 import Course.Courses;
@@ -19,7 +20,7 @@ public class ProfessorView {
 		System.out.printf("<<<<<<<<<< WELCOME TO PROFESSOR MENU %S %S  >>>>>>>>>>\n", professor.getFirstNameProf(),professor.getLastNameProf());
 		System.out.println("You are added to the course/courses  below:");
 		//for (Professor p :AdminService.listAllProfessorById(professor.getIdProfessor())) {
-			for (Courses c : AdminService.getCourseByProfessorId(professor.getIdProfessor()) ) {
+			for (Courses c : AdminService.getCourseByProfessorUsername(professor.getUsernameProf()) ) {
 				System.out.printf("-%s   with id  %d.\n",c.getCourseName(),c.getCourseId());
 			 }
 	
@@ -53,7 +54,7 @@ public class ProfessorView {
 			break;
 			
 		case 3:
-		
+		gradeStudent();
 			break;
 		case 4 :
 			break;
@@ -125,6 +126,8 @@ public void addStudentIntoActualCourse() {
 			System.out.print("Please enter your username: ");
 			p.setUsernameProf(sc.next());
 			
+			AdminService.authenticateProfessorByUsername(p);
+			
 			System.out.print("Please write course NAME in which you want to add the student. -->  ");
 			course.setCourseName(sc.next());
 			
@@ -174,6 +177,7 @@ public void addStudentIntoActualCourse() {
 			System.out.println(exception.getMessage());
 			
 			addStudentIntoActualCourse();
+			
 		}catch (InputMismatchException exception) {
 	        System.out.println("Write word OR number in  requested details please.\n");
 			addStudentIntoActualCourse();
@@ -228,11 +232,74 @@ public  void editCourseDetails() {
 		System.out.println(exception.getMessage());
 		
 		editCourseDetails();
+	}finally {
+		input.close();
 	}
 }//
 
 
-
+public void gradeStudent() {
+	Courses course = new Courses();
+	Professor professor = new Professor();
+	Student student = new Student ();
+	Grade grade= new Grade ();
+	
+	System.out.println("*Grade Student*\n");
+	Scanner sc = new Scanner (System.in);
+	
+	System.out.print("Give your username: ");
+	professor.setUsernameProf(sc.next());
+	AdminService.authenticateProfessorByUsername(professor);
+	System.out.print("Give course NAME you want to grade the student ");
+	course.setCourseName(sc.next());
+	Courses c =AdminService.getCourseByName(course.getCourseName());
+	  List<String> coursesName = ProfessorService.getCourseNameByProfessorUsername(professor.getUsernameProf());
+	
+    try {
+			if (coursesName.contains(course.getCourseName()) ) {
+				
+				System.out.print("Give student id you want to grade: ");
+				student.setIdStudent(sc.nextInt());
+				Student s =AdminService.getStudentBySId(student.getIdStudent());
+			    Student st = AdminService.getAllStudentByUsername(s.getUserNameStudent());
+			    
+			    
+				System.out.print("Enter Grade :" );
+				grade.setGrade(sc.nextInt());
+				
+		     	ProfessorService.gradeStudent(c, st, grade);
+		    	//ProfessorService.getIdStudentByUsername(student);
+			
+			 /*   for (Courses c : AdminService.getCourseByID(course.getCourseId())) {
+                    ProfessorService.addStudentCoursebyIds(student.getIdStudent(), course.getCourseId());
+		   */
+  System.out.printf("<<<<<<<<<< You just graded student %s %s in course %s with grade %d ", st.getFirstNameStudent(),st.getLastNameStudent(),course .getCourseName(),grade.getGrade());
+	        //                                }
+			
+			Professor p = ProfessorService.getProfByCourseName(course.getCourseName());
+			professorMenu(p);
+			} 
+	
+			else {
+				System.out.printf("\n %s \n\n",Messages.INVALID_COURSE_NAME.getMessage());
+				gradeStudent();
+			}
+			
+	}catch (ProjectException exception) {
+		System.out.println(exception.getMessage());
+		
+		gradeStudent();
+	}catch (InputMismatchException exception) {
+        System.out.println("Write word OR number in  requested details please.\n");
+		gradeStudent();
+		
+		
+		}
+			finally {
+				sc.close();
+			}
+			
+}
 
 
 

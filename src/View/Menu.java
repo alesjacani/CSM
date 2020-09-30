@@ -41,7 +41,7 @@ public class Menu {
 		   	break;
 		   	
 		   case 3:
-		   	new StudentView().studentMenu();
+		   	new Login().StudentView();
 		   	break;
 		   	
 		   default:

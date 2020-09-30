@@ -101,12 +101,12 @@ public void professorView() {
 			new Menu().start();
 		default:
 			System.out.println("  Please write ONLY INTEGERS FROM 1-2. \nLET'S START OVER & WRITE AGAIN.\n\n");
-			professorLogin();
+			professorView();
 		}
 	}
 	   catch (InputMismatchException e) {
 		   System.out.println("  Please write ONLY INTEGERS FROM 1-2.  \n");
-		   adminView();
+		   professorView();
 	}
 	finally {
 		input.close();}
@@ -139,7 +139,76 @@ public void professorLogin() {
 	} catch (ProjectException e) {
 		System.out.println("\n"+e.getMessage()+"\n");
 		professorLogin();
+	}finally {
+		input.close();}
+	
+	
+	
+}//end of professorLogin
+
+
+
+public void StudentView() {
+	
+	
+	System.out.println("\n| PLEASE type 1 to LOGIN IN  |");
+	System.out.println("| Type 2 to GO BACK  :)      |\n");
+	
+
+	Scanner input = new Scanner (System.in);
+	
+	try {
+		int number = input.nextInt();
+		switch (number) {
+		case 1:
+			studentLogin();
+			break;
+		case 2:
+			new Menu().start();
+		default:
+			  System.out.println("  Please write ONLY INTEGERS FROM 1-2. \nLET'S START OVER & WRITE AGAIN.\n\n");
+			StudentView();
+		}
 	}
+	   catch (InputMismatchException e) {
+		   System.out.println("  Please write ONLY INTEGERS FROM 1-2.  \n");
+		   StudentView();
+	}
+	finally {
+		input.close();}
+	
+	
+}
+
+
+
+public void studentLogin() {
+	Scanner input = new Scanner (System.in);
+	Student student = new Student();
+
+	System.out.println(" \n*Enter your details right to continue*\n");
+	
+	System.out.print("Write your username: " );
+	student.setUserNameStudent(input.next());
+	
+	
+	System.out.println("-------------------------------------------------------------");
+	
+	System.out.print("Write your password: ");
+	student.setPasswordStudent(input.next());
+	
+	try {
+		ProfessorService.authenticateStudent(student);
+    
+		new StudentView().studentMenu(student);
+	
+		
+	} catch (ProjectException e) {
+		System.out.println("\n"+e.getMessage()+"\n");
+		professorLogin();
+	}finally {
+		input.close();}
+	
 	
 	
 }//end of professorLogin

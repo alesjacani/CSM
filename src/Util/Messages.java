@@ -2,10 +2,10 @@ package Util;
 
 public enum Messages {
 
-	PROFESSOR_EXISTS ("\nxxx The professor you are trying to add, exists. xxx \n"),
-	STUDENT_EXISTS ("\nXXX The student you are trying to add, exists. XXX\n"),
+	PROFESSOR_EXISTS ("\nxxx The professor you are trying to add with typed USERNAME exists. TRY ANOTHER USERNAME xxx \n"),
+	STUDENT_EXISTS ("\nXXX The student you are trying to add with typed USERNAME exists. TRY ANOTHER USERNAM. XXX\n"),
 	
-	PROFESSOR_DOES_NOT_EXISTS("\nXXX Professor does not exists. TRY AGAIN!  XXX\n"),
+	PROFESSOR_DOES_NOT_EXISTS("\nXXX THIS PROFESSOR DOES NOT EXIST. TRY TO WRITE ANOTHER USERNAME XXX\n"),
 	STUDENT_DOES_NOT_EXISTS("\nXXX Student does not exists. TRY AGAIN!  XXX\n"),
     MENU_MESSAGE ("Please write ONLY INTEGERS FROM 1-3. \nWrite number again. \n "),
     

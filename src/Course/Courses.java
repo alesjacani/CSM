@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Accounts.Professor;
+import Accounts.Student;
 
 public class Courses {
 	
@@ -16,7 +17,7 @@ private String durationTime;
 private List<Professor> professorList = new ArrayList<>();
 private int professorId;
 
-
+private List<Student> studentList = new ArrayList<>();
 public int getProfessorId() {
 	return professorId;
 }
@@ -42,6 +43,16 @@ public void setDurationTime(String durationTime) {
 }
 
 
+
+
+public List<Student> getStudentList() {
+	return studentList;
+}
+
+
+public void setStudentList(List<Student> studentList) {
+	this.studentList = studentList;
+}
 
 
 public List<Professor> getProfessorList() {

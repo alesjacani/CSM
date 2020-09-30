@@ -31,7 +31,7 @@ public class AdministratorView {
 		System.out.println("1-Add Course                7- Add professor                       12- Edit student              17- GO BACK TO LOGIN PAGE." );
 		System.out.println("2-Delete all Courses        8- Edit professor                      13- Delete by username");
 		System.out.println("3-View course details       9- Delete by username                  14- List students.");
-		System.out.println("  by Course Name            10-List all professors.                    15-                               ");
+		System.out.println("  by Course Name            10-List all professors.                15-                               ");
 		System.out.println("4-List all courses                                                 16-                  ");
 		System.out.println("5-Delete course \nby course name                                      ");
 	    System.out.println("6-Add a actual professor\n into a course.");
@@ -156,8 +156,7 @@ public class AdministratorView {
 	public void deleteCourse() {
 		Scanner sc = new Scanner(System.in);
 		try {
-			Courses course =new Courses();
-			AdminService.deleteCourse(course);
+			AdminService.deleteCourse();
 			System.out.printf("YOU DELETED ALL COURSES.");
 	      adminMenu();
 		} catch (ProjectException exception) {
@@ -234,13 +233,24 @@ public class AdministratorView {
 	
 	
 	public void listAllCourses() {
-		for (Courses c : AdminService.listAllCourses() ) {
-			for (Professor p :AdminService.listAllProfessorById(c.getProfessorId())) {
-            System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s. \n \n ",
-		          c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(), p.getFirstNameProf());
-			 }
-		}
-	adminMenu();
+		//for (Courses c : AdminService.listAllCourses() ) {
+		//System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s %s.\n ",
+		//                 c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),c.getProfessorList().get(0).getFirstNameProf(),
+		 ///                 c.getProfessorList().get(0).getLastNameProf() );
+	  // for(Student s: AdminService.listStudentByCourseName("Fizik")) {
+	    	//System.out.printf("-List of students: \n     %s %s  \n \n",s.getFirstNameStudent(),s.getLastNameStudent());
+		//   System.out.println(s.getFirstNameStudent()+s.getLastNameStudent());
+	   // }
+				
+		//System.out.println(AdminService.listStudentByCourseName("Fizik"));
+		//}
+		//}
+	//adminMenu();
+		Scanner i = new Scanner(System.in);
+		Student st = new Student ();
+		System.out.println("id");
+		st.setIdStudent(i.nextInt());
+		
 	}
 	
 	 
@@ -250,7 +260,7 @@ public class AdministratorView {
 			System.out.printf("\nProfessor %s %s , with username %s teaching in course/s:\n",
 					         p.getFirstNameProf(),p.getLastNameProf(),p.getUsernameProf());
 
-			for (Courses c : AdminService.getCourseByProfessorId(p.getIdProfessor())) {
+			for (Courses c : AdminService.getCourseByProfessorUsername(p.getUsernameProf())) {
 	//System.out.printf("\nProfessor %s %s , with username %s teaching in course/s:\n",p.getFirstNameProf(),p.getLastNameProf(),p.getUsernameProf());
 				System.out.printf("-%s\n",c.getCourseName());
 			}
@@ -414,13 +424,12 @@ System.out.printf("You just added professor: %s %s into %s course.",p.getFirstNa
 		try {
 	        
 			System.out.println("Please give professor username: ");
-			professor.setFirstNameProf(sc.next());
+			professor.setUsernameProf(sc.next());;
 			
-			
-			
-		    AdminService.deleteProfessorByUsername(professor);
 		    
-			System.out.println("Professor was successfully deleted!");
+			AdminService.deleteProfessorByUsername(professor);
+		    
+		    System.out.println("Professor was successfully deleted!");
 			adminMenu();
 				
 		}
