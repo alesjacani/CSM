@@ -31,7 +31,7 @@ private final String GET_COURSE_NAME_BY_PROFESSOR_USERNAME="SELECT course.course
 private final String UPDATE_COURSE_DETAILS="UPDATE course SET course_description=?,course_duration_time=? WHERE course_name=?";
 private final String GRADE_STUDENT="UPDATE grade SET course_grade=? WHERE course_id=? AND student_id=?";
 private final String GET_STUDENT_BY_USERNAME="SELECT * FROM student WHERE student_username=?";
-
+private final String STUDENT_HAS_ALREADY_A_GRADE="SELECT COUNT(course_grade) FROM grade WHERE course_id=? AND student_id=?";
 public void changeProfessorPassword(String username, String password) {
 	try ( Connection connection =ConnectionDb.getConnection();
 			PreparedStatement preparedSt = connection.prepareStatement(CHANGE_PASSWORD);) {
@@ -205,6 +205,27 @@ public void addGrade (Courses course, Student student,Grade grade) {
 		
 	}
 
+}
+public boolean studentHasGrade(Courses course, Student student) {
+	try ( Connection connection =ConnectionDb.getConnection();
+			PreparedStatement preparedSt = connection.prepareStatement(STUDENT_HAS_ALREADY_A_GRADE);){
+		    preparedSt.setInt(1, course.getCourseId());
+		    preparedSt.setInt(2, student.getIdStudent());
+		    ResultSet rs = preparedSt.executeQuery();
+			while(rs.next()) {
+				if(rs.getInt(1)==0) {
+					 return false;
+				}
+				else {
+					return true;
+				}
+			}
+			
+	} catch (SQLException e) {
+		System.out.println("error " + e);
+		
+	}
+	return false;
 }
 
 }//end of CLASS

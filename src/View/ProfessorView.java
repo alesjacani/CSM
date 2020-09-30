@@ -262,25 +262,60 @@ public void gradeStudent() {
 				student.setIdStudent(sc.nextInt());
 				Student s =AdminService.getStudentBySId(student.getIdStudent());
 			    Student st = AdminService.getAllStudentByUsername(s.getUserNameStudent());
+			              
 			    
+			            try {
+			            if(ProfessorService.studentHasGrade(c, st)) {
+			    	       System.out.printf("Student %s %s into %s course has already a grade.\n",st.getFirstNameStudent(),st.getLastNameStudent(),c.getCourseName());
+					      System.out.println("Press 1 to update the grade\nPress 2 to go back to menu");
+					      int number = sc.nextInt();
+					              
+					            	switch (number) {
+					            	
+					               case 1:
+					            	System.out.print("Enter Grade :" );
+					   				grade.setGrade(sc.nextInt());
+					   				
+					   				    if (grade.getGrade()>=4 && grade.getGrade()<=10) {
+					            	    ProfessorService.gradeStudent(c, st, grade);
+					            	    System.out.printf("<<<<<<<<<< You successfully just graded student %s %s in course %s with grade %d ", st.getFirstNameStudent(),st.getLastNameStudent(),course .getCourseName(),grade.getGrade());
+					       	            Professor p = ProfessorService.getProfByCourseName(course.getCourseName());
+					       			    professorMenu(p);}
+					       			    else{
+					       				System.out.println("Grade should be between numbers 4 to 10. TRY AGAIN!");}
+					       			break;
+					       			
+					       			
+					               case 2:
+					            	   professorMenu(professor);
+					       			break;
+					       			
+					       		default:
+					       			System.out.println("PLEASE WRITE  ||1 OR 2.||");
+					            	   }
+						     }
 			    
-				System.out.print("Enter Grade :" );
-				grade.setGrade(sc.nextInt());
-				
-		     	ProfessorService.gradeStudent(c, st, grade);
-		    	//ProfessorService.getIdStudentByUsername(student);
-			
-			 /*   for (Courses c : AdminService.getCourseByID(course.getCourseId())) {
-                    ProfessorService.addStudentCoursebyIds(student.getIdStudent(), course.getCourseId());
-		   */
-  System.out.printf("<<<<<<<<<< You just graded student %s %s in course %s with grade %d ", st.getFirstNameStudent(),st.getLastNameStudent(),course .getCourseName(),grade.getGrade());
-	        //                                }
-			
-			Professor p = ProfessorService.getProfByCourseName(course.getCourseName());
-			professorMenu(p);
-			} 
-	
-			else {
+			            else {
+						System.out.print("Enter Grade :" );
+		   				grade.setGrade(sc.nextInt());
+		   				       if (grade.getGrade()>=4 && grade.getGrade()<=10) {
+			            	   ProfessorService.gradeStudent(c, st, grade);
+			            	   System.out.printf("<<<<<<<<<< You successfully just graded student %s %s in course %s with grade %d ", st.getFirstNameStudent(),st.getLastNameStudent(),course .getCourseName(),grade.getGrade());
+			       	           Professor p = ProfessorService.getProfByCourseName(course.getCourseName());
+			       			   professorMenu(p);}
+			       			   else{
+			       				System.out.println("Grade should be between numbers 4 to 10. TRY AGAIN!");
+			       			}
+		   		            }
+			           }catch (InputMismatchException e) {
+							System.out.println("Write only ||1 OR 2.||numbers");
+						}catch (ProjectException exception) {
+							System.out.println(exception.getMessage());
+							gradeStudent(); }
+						
+		 
+			}//END OF FIRST IF
+	        else {
 				System.out.printf("\n %s \n\n",Messages.INVALID_COURSE_NAME.getMessage());
 				gradeStudent();
 			}

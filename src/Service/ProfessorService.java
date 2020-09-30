@@ -59,7 +59,9 @@ public static void changePassword(String username,String password) {
 	 public static void editCourseDetails(String description, String time, String courseName) {
 		 professorRepository.editCourseDetails(description, time, courseName);
 	 }
-	 
+	 public static  boolean studentHasGrade(Courses course, Student student) {
+		 return professorRepository.studentHasGrade(course, student);
+	 }
 	 
 	 public static void gradeStudent (Courses course, Student student, Grade grade) {
 		//Student s =AdminService.getStudentBySId(student.getIdStudent());

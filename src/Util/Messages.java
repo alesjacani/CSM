@@ -14,8 +14,8 @@ public enum Messages {
 	COURSE_HAS_PROFESSOR("\nXXX The course has already a professor! Write an another course. XXX\n"),
 	ID_DOES_NOT_EXISTS ("\nTHIS ID DOES NOT EXITS.\n"),
 	WRONG_USERNAME_OR_PASSWORD("\nXXX USERNAME OR PASSWORD WAS WRITTEN WRONG! PLEASE TRY AGAIN! XXX\n"),
-	INVALID_COURSE_NAME("\nXXX  INVALID COURSE NAME ! WRITE COURSE NAME THAT YOU TEACH. TRY AGAIN!!!!  XXX\n");
-	
+	INVALID_COURSE_NAME("\nXXX  INVALID COURSE NAME ! WRITE COURSE NAME THAT YOU TEACH. TRY AGAIN!!!!  XXX\n"),
+	STUDENT_HAS_GRADE("Student has already a grade!");
 	private String message;
 	
 	Messages(String message) {
