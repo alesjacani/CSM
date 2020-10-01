@@ -22,16 +22,16 @@ public class UsersRepository {
     private final String DELETE_RECORDS_GRADE="DELETE FROM grade";
     		
     private final String GET_COURSE_BY_NAME = "SELECT * FROM course where course_name = ?";
-    private final String GET_COURSE_BY_PROFESSOR_USERNAME = "SELECT * FROM course \r\n" + 
-    		"FULL JOIN professor ON course.professor_id=professor.professor_id\r\n" + 
-    		"WHERE professor_username=?";
+    private final String GET_COURSE_BY_PROFESSOR_USERNAME = "SELECT * FROM course  \r\n" + 
+    		"LEFT JOIN professor ON course.professor_id=professor.professor_id\r\n" + 
+    		"WHERE professor.professor_username=?";
     private final String COURSE_EXIST = "SELECT COUNT (*) FROM course WHERE course_name=?";
     ////////////////////////////
     private final String DELETE_COURSE_BY_NAME = "DELETE FROM course WHERE course_name=?";
     private final String DELETE_COURSE_FROM_GRADE="DELETE FROM grade WHERE course_id=?";
     ///////////////////////EDDHE NGA TABELA GRADE
-    private final String LIST_ALL_COURSE = "SELECT * FROM course  \r\n" + 
-    		"LEFT JOIN professor ON course.professor_id=professor.professor_id";
+    private final String LIST_ALL_COURSE = "SELECT * FROM course   \r\n" + 
+    		"INNER JOIN professor ON course.professor_id=professor.professor_id  ";
     
     private final String ADD_PROFESSOR="INSERT INTO professor (professor_name, professor_surname,professor_username,professor_password) VALUES (?,?,?,?)";
     private final String GET_ID_OF_PROFESSOR= "SELECT professor_id FROM professor WHERE professor_username=?";
@@ -52,8 +52,18 @@ public class UsersRepository {
    private final String EDIT_PROFESSOR_DETAILS="UPDATE professor SET professor_name=?,professor_surname=?,professor_username=? WHERE professor_id=?";
    private final String DELETE_PROFESSOR_BY_USERNAME="DELETE FROM professor WHERE professor_username=?";
    private final String DELETE_PROFESSOR_FROM_COURSE="UPDATE course SET professor_id=null WHERE professor_id=?";
-
    
+private final String  LIST_STUDENTS_BYCOURSENAME="SELECT student.student_id,student.student_name,student.student_surname,student.student_username FROM grade  \r\n" + 
+		"FULL JOIN course ON grade.course_id=course.course_id\r\n" + 
+		"FULL JOIN student ON grade.student_id=student.student_id \r\n" + 
+		"WHERE course.course_name=?";
+   
+
+
+private final String LIST_COURSE_BY_STUDENT_USERNAME="SELECT * FROM grade \r\n" + 
+		"FULL JOIN course ON grade.course_id=course.course_id \r\n" + 
+		"FULL JOIN student ON grade.student_id=student.student_id \r\n" + 
+		"WHERE student.student_username=?";
 	public void addCourse(Courses course) {
 		try (Connection connection = ConnectionDb.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(ADD_COURSE))
@@ -189,23 +199,15 @@ public boolean courseHasProfessor(Courses course) {
 			
 			while (rs.next()) {
 			    Courses c = new Courses ();
-		        Professor p = new Professor ();
-		        listAllProfessorByUsername(p.getUsernameProf());
-		        
-		        p.setUsernameProf(rs.getString("professor_username"));
-		    	
-					
-				listAllProfessorByUsername(p.getUsernameProf()).add(p);
-				
-		        
+		          
 		    	c.setCourseId(rs.getInt("course_id"));
 				c.setCourseName(rs.getString("course_name"));
 				c.setDesciption(rs.getString("course_description"));
 				c.setDurationTime(rs.getString("course_duration_time"));
-				c.setProfessorId(rs.getInt("professor_id"));
+				
 		
 				
-				c.setProfessorList(listAllProfessorByUsername(p.getUsernameProf()));
+				
 				courses.add(c);
 				
 			
@@ -229,7 +231,7 @@ public boolean courseHasProfessor(Courses course) {
   			    while (rs.next()) {
 			        Courses c = new Courses ();
 			        Professor p = new Professor ();
-			        
+			       
 			       
 			        p.setIdProfessor(rs.getInt("professor_id"));
 			    	p.setFirstNameProf(rs.getString("professor_name"));
@@ -238,14 +240,14 @@ public boolean courseHasProfessor(Courses course) {
 					p.setPasswordProf(rs.getString("professor_password"));
 					listAllProfessorByUsername(p.getUsernameProf()).add(p);
 					
-				
-			        
+				   
+				    
 			    	c.setCourseId(rs.getInt("course_id"));
 					c.setCourseName(rs.getString("course_name"));
 					c.setDesciption(rs.getString("course_description"));
 					c.setDurationTime(rs.getString("course_duration_time"));
 					c.setProfessorList(listAllProfessorByUsername(p.getUsernameProf()));
-			       
+			      
 					
 					
 					courses.add(c);
@@ -295,9 +297,9 @@ public boolean courseHasProfessor(Courses course) {
 	}//end of listAllProfessorById
 	
 	
-	public Student getAllStudentByUsername(String username){	
+	public List<Student> listStudentsByUsername(String username){	
 		
-		
+		List<Student> students = new ArrayList();
 		try (Connection connection = ConnectionDb.getConnection();
 				 
 				PreparedStatement preparedSt = connection.prepareStatement(LIST_ALL_STUDENT_BY_USERNAME);){
@@ -313,8 +315,77 @@ public boolean courseHasProfessor(Courses course) {
 			       s.setUserNameStudent(rs.getString("student_username"));
 			       s.setPasswordStudent(rs.getString("student_password"));
 			        		        
-			    
+			    students.add(s);
 				
+				}
+			    return students;
+
+		} catch (SQLException exception) {
+			System.out.println("error " + exception);
+			return null;
+		}
+			
+		}//end 
+	
+	
+	public List<Student> listStudentByCourseName(String courseName) {
+		List <Student> students = new ArrayList();
+			try (Connection connection = ConnectionDb.getConnection();
+					PreparedStatement preparedSt = connection.prepareStatement(LIST_STUDENTS_BYCOURSENAME);) {
+				
+				preparedSt.setString(1, courseName);
+				ResultSet rs = preparedSt.executeQuery();
+				
+				while (rs.next()) {
+				   // Courses c = new Courses ();
+			     
+			        Student s = new Student();
+			        
+					
+					 s.setIdStudent(rs.getInt("student_id"));
+					 s.setFirstNameStudent(rs.getString("student_name"));
+					 s.setLastNameStudent(rs.getString("student_surname"));
+					 s.setUserNameStudent(rs.getString("student_username"));
+				    //    s.setPasswordStudent(rs.getString("student_password"));
+					   students.add(s);
+			    	/*c.setCourseId(rs.getInt("course_id"));
+					c.setCourseName(rs.getString("course_name"));
+					c.setDesciption(rs.getString("course_description"));
+					c.setDurationTime(rs.getString("course_duration_time"));
+					c.setProfessorId(rs.getInt("professor_id"));
+			
+					
+					
+					 c.setStudentList(listStudentsByUsername(s.getUserNameStudent()));*/
+					
+					
+				
+				}
+			    return students;
+				
+			} catch (SQLException e) {
+				System.out.println("error " + e);
+				return null;
+			}
+		}//end of getCourseByPROFESSOR-username
+	///////////////////////////////////////////////////
+	public Student getAllStudentByUsername(String username){	
+		
+		
+		try (Connection connection = ConnectionDb.getConnection();
+				 
+				PreparedStatement preparedSt = connection.prepareStatement(LIST_ALL_STUDENT_BY_USERNAME);){
+			    preparedSt.setString(1, username);
+			    ResultSet rs = preparedSt.executeQuery();
+			    Student s = new Student();
+
+				    while (rs.next()) {
+			       s.setIdStudent(rs.getInt("student_id"));
+			       s.setFirstNameStudent(rs.getString("student_name"));
+			       s.setLastNameStudent(rs.getString("student_surname"));
+			       s.setUserNameStudent(rs.getString("student_username"));
+			       s.setPasswordStudent(rs.getString("student_password"));
+			     
 				}
 			    return s;
 
@@ -323,11 +394,10 @@ public boolean courseHasProfessor(Courses course) {
 			return null;
 		}
 			
-		}//end of listAllProfessorById
-	
-	
+		}//end 
+	///////////////////////////////////////////////////////////////////////////////
 
-public Student listAllStudentBySId(int id){	
+public Student getAllStudentBySId(int id){	
 
 		try (Connection connection = ConnectionDb.getConnection();
 				 
@@ -338,6 +408,7 @@ public Student listAllStudentBySId(int id){
 
 			    
 				    while (rs.next()) {
+				    	
 			       s.setIdStudent(rs.getInt("student_id"));
 			       s.setFirstNameStudent(rs.getString("student_name"));
 			       s.setLastNameStudent(rs.getString("student_surname"));
@@ -573,6 +644,38 @@ public void editProfessorDetails(Professor professor) {
 			System.out.println("error " + e);
 		}
 	 }
+	 
+	 
+	 public List<Courses> listCourseBySUsername(String username) {
+			List <Courses> courses = new ArrayList();
+				try (Connection connection = ConnectionDb.getConnection();
+						PreparedStatement preparedSt = connection.prepareStatement(LIST_COURSE_BY_STUDENT_USERNAME);) {
+					
+					preparedSt.setString(1, username);
+					ResultSet rs = preparedSt.executeQuery();
+					
+					while (rs.next()) {
+					    Courses c = new Courses ();
+				     
+				       c.setCourseId(rs.getInt("course_id"));
+						c.setCourseName(rs.getString("course_name"));
+						c.setDesciption(rs.getString("course_description"));
+						c.setDurationTime(rs.getString("course_duration_time"));
+						
+						
+						
+						 courses.add(c);
+						
+						
+					
+					}
+				    return courses;
+					
+				} catch (SQLException e) {
+					System.out.println("error " + e);
+					return null;
+				}
+			}
 }//end of CLASS
 
 

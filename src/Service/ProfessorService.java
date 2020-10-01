@@ -66,10 +66,29 @@ public static void changePassword(String username,String password) {
 	 public static void gradeStudent (Courses course, Student student, Grade grade) {
 		//Student s =AdminService.getStudentBySId(student.getIdStudent());
 		//Student st = AdminService.getAllStudentByUsername(s.getUserNameStudent());
-		 if (professorRepository.studentExists(student)) {
+		 if (professorRepository.studentExistsBySId(student)) {
 			 professorRepository.addGrade(course, student , grade);
 		 }else {
 			 throw new ProjectException(Messages.STUDENT_DOES_NOT_EXISTS.getMessage());
 		 }
+	 }
+	 
+	 
+	// public boolean studentBelongToCourse(Student student) {
+	//	 if(professorRepository.studentExistsBySId(student)) {
+			 
+	//	 }
+	// }
+	 public static int getGradeByStudentId(int studentId) {
+		 return professorRepository.getGradeByStudentId(studentId);
+	 }
+	 
+	 public static int getGradeByStudentCourseId(int studentId,int courseId) {
+		 return professorRepository.getGradeByStudentCourseId(studentId, courseId);
+	 }
+	 
+	 
+	 public static List<Student> studentWithMaxGrade(int courseId) {
+		return professorRepository.studentWithMaxGradeByCourseId(courseId);
 	 }
 }//end of CLASs

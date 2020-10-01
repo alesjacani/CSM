@@ -199,7 +199,7 @@ public void studentLogin() {
 	
 	try {
 		ProfessorService.authenticateStudent(student);
-    
+         AdminService.getAllStudentByUsername(student.getUserNameStudent());
 		new StudentView().studentMenu(student);
 	
 		

@@ -1,6 +1,7 @@
 package Repository;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.print.attribute.standard.PresentationDirection;
 
@@ -14,6 +15,7 @@ import Accounts.Grade;
 import Accounts.Professor;
 import Accounts.Student;
 import Course.Courses;
+import Service.AdminService;
 import Util.ConnectionDb;
 
 public class ProfessorRepository {
@@ -23,6 +25,7 @@ private String ADD_STUDENT="INSERT INTO student (student_name, student_surname,s
 private String ADD_STUDENT_COURSE = "INSERT INTO grade (student_id,course_id) VALUES (?,?)";
 
 private final String STUDENT_EXIST="SELECT COUNT (*) FROM  student WHERE student_username=?";
+private final String STUDENT_EXISTS_BY_SID="SELECT COUNT(*) FROM student WHERE student_id=?";
 
 private final String GET_PROF_BY_COURSE_ID="SELECT * FROM professor INNER JOIN course ON professor.professor_id=course.professor_id WHERE course_name=?";
 
@@ -32,6 +35,19 @@ private final String UPDATE_COURSE_DETAILS="UPDATE course SET course_description
 private final String GRADE_STUDENT="UPDATE grade SET course_grade=? WHERE course_id=? AND student_id=?";
 private final String GET_STUDENT_BY_USERNAME="SELECT * FROM student WHERE student_username=?";
 private final String STUDENT_HAS_ALREADY_A_GRADE="SELECT COUNT(course_grade) FROM grade WHERE course_id=? AND student_id=?";
+private final String GET_GRADE_BY_ST_ID= "SELECT course_grade FROM grade WHERE student_id=?";
+private final String GET_GRADE_BYSTUDENTCOURSE_ID="SELECT course_grade FROM grade WHERE student_id=? AND course_id=? ";
+private final String AVERAGE_GRADE_COURSE="SELECT course.course_name, AVG (course_grade) AS average\r\n" + 
+		"FROM course\r\n" + 
+		"INNER JOIN grade ON course.course_id = grade.course_id \r\n" + 
+		"WHERE course.course_name=?\r\n" + 
+		"GROUP BY course.course_name";
+
+private final String STUDENT_WITH_MAX_GRADE="SELECT * FROM student\r\n" + 
+		"INNER JOIN grade ON student.student_id = grade.student_id \r\n" + 
+		"WHERE course_grade= (SELECT MAX (course_grade) FROM grade WHERE course_id=?)";
+
+
 public void changeProfessorPassword(String username, String password) {
 	try ( Connection connection =ConnectionDb.getConnection();
 			PreparedStatement preparedSt = connection.prepareStatement(CHANGE_PASSWORD);) {
@@ -85,6 +101,28 @@ public boolean studentExists(Student student) {
 	return false;
 }//end of studentExists
 
+public boolean studentExistsBySId(Student student) {
+	
+	try(Connection connection = ConnectionDb.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(STUDENT_EXISTS_BY_SID)) {
+		preparedStatement.setInt(1, student.getIdStudent());
+		
+		ResultSet rs = preparedStatement.executeQuery();
+		while(rs.next()) {
+			if(rs.getInt(1)==0) {
+				 return false;
+			}
+			else {
+				return true;
+			}
+		}
+		
+		
+	} catch (SQLException e) {
+		System.out.println("error " + e);
+	}
+	return false;
+}//end of studentExists
 
 
 
@@ -227,5 +265,94 @@ public boolean studentHasGrade(Courses course, Student student) {
 	}
 	return false;
 }
+
+
+public int getGradeByStudentId(int id) {
+	try ( Connection connection =ConnectionDb.getConnection();
+			PreparedStatement preparedSt = connection.prepareStatement(GET_GRADE_BY_ST_ID);){
+		preparedSt.setInt(1, id);
+		ResultSet rs = preparedSt.executeQuery();
+		Grade grade =new Grade();
+		while (rs.next()) {
+			
+			grade.setGrade(rs.getInt("course_grade"));
+			
+			
+		}
+		return grade.getGrade();
+	} catch (SQLException e) {
+		System.out.println("error " + e);
+		return 0;
+	}
+}
+
+public int getGradeByStudentCourseId(int studentId, int courseId) {
+	try ( Connection connection =ConnectionDb.getConnection();
+			PreparedStatement preparedSt = connection.prepareStatement(GET_GRADE_BYSTUDENTCOURSE_ID);){
+		preparedSt.setInt(1, studentId);
+		preparedSt.setInt(2, courseId);
+		ResultSet rs = preparedSt.executeQuery();
+		Grade grade =new Grade();
+		while (rs.next()) {
+			
+			grade.setGrade(rs.getInt("course_grade"));
+			
+			
+		}
+		return grade.getGrade();
+	} catch (SQLException e) {
+		System.out.println("error " + e);
+		return 0;
+	}
+}
+public List<Student> studentWithMaxGradeByCourseId(int courseId){
+	List<Student>students = new ArrayList();
+	
+	 try ( Connection connection =ConnectionDb.getConnection();
+			PreparedStatement preparedSt = connection.prepareStatement(STUDENT_WITH_MAX_GRADE);){
+		preparedSt.setInt(1, courseId);
+		ResultSet rs = preparedSt.executeQuery();
+		
+		
+		
+		while (rs.next()) {
+			Student s = new Student();
+			s.setFirstNameStudent(rs.getString("student_name"));
+			s.setLastNameStudent(rs.getString("student_surname"));
+			s.setIdStudent(rs.getInt("student_id"));
+			
+			students.add(s);
+		}
+		return students;
+	} catch (SQLException e) {
+		System.out.println("error " + e);
+		return null;
+	}
+	
+}
+
+
+
+public int averageGradeCourse(String courseName) {
+	try( Connection connection =ConnectionDb.getConnection();
+			PreparedStatement preparedSt = connection.prepareStatement(AVERAGE_GRADE_COURSE);) {
+		    preparedSt.setString(1, courseName);
+		    ResultSet rs = preparedSt.executeQuery();
+			Grade grade = new Grade();
+			
+			
+			while (rs.next()) {
+				
+			grade.setGrade(rs.getInt("average"));
+				
+			}
+			return grade.getGrade();
+	} catch (SQLException e) {
+		System.out.println("error " + e);
+		return 0;
+	}
+}
+
+
 
 }//end of CLASS

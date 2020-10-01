@@ -11,6 +11,7 @@ import Accounts.Student;
 import Accounts.User;
 import Course.Courses;
 import Exceptions.ProjectException;
+import Repository.UsersRepository;
 import Service.AdminService;
 import Service.ProfessorService;
 import Service.StudentService;
@@ -233,26 +234,19 @@ public class AdministratorView {
 	
 	
 	public void listAllCourses() {
-		//for (Courses c : AdminService.listAllCourses() ) {
-		//System.out.printf("The course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s %s.\n ",
-		//                 c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),c.getProfessorList().get(0).getFirstNameProf(),
-		 ///                 c.getProfessorList().get(0).getLastNameProf() );
-	  // for(Student s: AdminService.listStudentByCourseName("Fizik")) {
-	    	//System.out.printf("-List of students: \n     %s %s  \n \n",s.getFirstNameStudent(),s.getLastNameStudent());
-		//   System.out.println(s.getFirstNameStudent()+s.getLastNameStudent());
-	   // }
-				
-		//System.out.println(AdminService.listStudentByCourseName("Fizik"));
-		//}
-		//}
-	//adminMenu();
-		Scanner i = new Scanner(System.in);
-		Student st = new Student ();
-		System.out.println("id");
-		st.setIdStudent(i.nextInt());
-		
-	}
-	
+		for (Courses c : AdminService.listAllCourses() ) {
+			
+		System.out.printf("\nThe course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s %s. \n -List of students: \n",
+		                c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),c.getProfessorList().get(0).getFirstNameProf(),
+		               c.getProfessorList().get(0).getLastNameProf() );
+		 //for(Courses course: AdminService.getCourseByProfessorUsername(c.getProfessorList().get(0).getUsernameProf())) {
+	    //	System.out.printf("%s %s \n",course.getStudentList().get(0).getFirstNameStudent(),course.getStudentList().get(0).getLastNameStudent());
+		for(Student s :AdminService.listStudentByCourseName(c.getCourseName())) {
+			System.out.printf("  %s %s\n",s.getFirstNameStudent(),s.getLastNameStudent());
+			
+	    }
+}
+}
 	 
 	
 	public void listAllProfessors() {

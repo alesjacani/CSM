@@ -82,15 +82,23 @@ public class AdminService {
   	    }
   	    
   	    public static Student getStudentBySId(int studentId){
-  	    	return usersRepository.listAllStudentBySId(studentId);
+  	    	return usersRepository.getAllStudentBySId(studentId);
   	    	}
   	    
   	    public static Student getAllStudentByUsername (String username) {
   	    	return usersRepository.getAllStudentByUsername(username);
   	    }
+  	    
+  	    public static List<Student> listStudentByCourseName(String courseName){
+  	    	return usersRepository.listStudentByCourseName(courseName);
+  	    }
+  	    
+  	//   public boolean  
+  	   
   	    //shtimi i te dhenave te proff ne professor table
   	    //shtimi i prof ne tabelen e kursit
   	    //marrja e id se profesorit te shtuar
+  	    
   	 public static void addProfessor(Professor professor,Courses course) {
   		 
   	 if (usersRepository.professorExistsOnlyUsername(professor)) {
@@ -174,5 +182,10 @@ public class AdminService {
   	 }
   	 ///////////////////////////////////////////////////////////////////
   	 
+  	 
+  	public static List<Courses> listCourseByStudentUsername(String studentUsername){
+  		return usersRepository.listCourseBySUsername(studentUsername);
+  				
+  	}
  
 }//end of CLASS COURSESERVICE
