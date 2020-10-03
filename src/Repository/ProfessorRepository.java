@@ -20,7 +20,7 @@ import Util.ConnectionDb;
 
 public class ProfessorRepository {
 private String CHANGE_PASSWORD="UPDATE professor SET professor_password=? WHERE professor_username=?";
-
+private final String CHANGE_PASSWORD_STUDENT="UPDATE student SET student_password=? WHERE student_username=?";
 private String ADD_STUDENT="INSERT INTO student (student_name, student_surname,student_username,student_password) VALUES (?,?,?,?)";
 private String ADD_STUDENT_COURSE = "INSERT INTO grade (student_id,course_id) VALUES (?,?)";
 
@@ -29,7 +29,8 @@ private final String STUDENT_EXISTS_BY_SID="SELECT COUNT(*) FROM student WHERE s
 
 private final String GET_PROF_BY_COURSE_ID="SELECT * FROM professor INNER JOIN course ON professor.professor_id=course.professor_id WHERE course_name=?";
 
-private final String GET_COURSE_NAME_BY_PROFESSOR_USERNAME="SELECT course.course_name FROM course INNER JOIN professor ON course.professor_id= professor.professor_id WHERE professor.professor_username=?";
+private final String GET_COURSE_NAME_BY_PROFESSOR_USERNAME="SELECT course.course_name FROM course INNER JOIN professor "
+		+ "ON course.professor_id= professor.professor_id WHERE professor.professor_username=?";
 
 private final String UPDATE_COURSE_DETAILS="UPDATE course SET course_description=?,course_duration_time=? WHERE course_name=?";
 private final String GRADE_STUDENT="UPDATE grade SET course_grade=? WHERE course_id=? AND student_id=?";
@@ -61,6 +62,19 @@ public void changeProfessorPassword(String username, String password) {
 	}
 }//end of changeProfessorPassword
 
+
+public void changeStudentPassword(String username, String password) {
+	try ( Connection connection =ConnectionDb.getConnection();
+			PreparedStatement preparedSt = connection.prepareStatement(CHANGE_PASSWORD_STUDENT);) {
+		preparedSt.setString(1, password);
+		preparedSt.setString(2, username);
+		preparedSt.executeUpdate();
+		
+	} catch (SQLException e) {
+		System.out.println("error " + e);
+		
+	}
+}
 
 
 public void addStudent(Student student) {
@@ -333,7 +347,7 @@ public List<Student> studentWithMaxGradeByCourseId(int courseId){
 
 
 
-public int averageGradeCourse(String courseName) {
+public double averageGradeCourse(String courseName) {
 	try( Connection connection =ConnectionDb.getConnection();
 			PreparedStatement preparedSt = connection.prepareStatement(AVERAGE_GRADE_COURSE);) {
 		    preparedSt.setString(1, courseName);

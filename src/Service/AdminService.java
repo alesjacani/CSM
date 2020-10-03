@@ -28,7 +28,7 @@ public class AdminService {
 	  throw new ProjectException(Messages.COURSE_EXITS.getMessage());
   }else {
 	  usersRepository.addCourse(course);}
-      usersRepository.getCourseByName(course.getCourseName());
+     // usersRepository.getCourseByName(course.getCourseName());
     		}
       
        
@@ -73,9 +73,7 @@ public class AdminService {
   		return usersRepository.listAllCourses();
   	    }
   	
-  	  //  public static List<Professor> listAllProfessorById(Integer id){
-      // usersRepository.listAllProfessorByUsername(id);
-  	  // }
+  	 
   	    
   	    public static List<Professor> listAllProfessors(){
   	    	return usersRepository.listAllProfessors();
@@ -93,7 +91,7 @@ public class AdminService {
   	    	return usersRepository.listStudentByCourseName(courseName);
   	    }
   	    
-  	//   public boolean  
+  	//public boolean  
   	   
   	    //shtimi i te dhenave te proff ne professor table
   	    //shtimi i prof ne tabelen e kursit

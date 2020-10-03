@@ -29,11 +29,11 @@ public class ProfessorView {
 		System.out.println("For your menu                    For Student                               For Course                  GO BACK");
 		System.out.println("------------------------------------------------------------------------------------------------------------------");
 		System.out.println("                                2-Add Student into course");
-		System.out.println("                                3-Grade student");
-		System.out.println("1-Change password               4-List student with grades            7- Edit course details        8- GO BACK TO LOGIN PAGE." );
+		System.out.println("                                3-Grade student                          7.-Average grade");                    
+		System.out.println("1-Change password               4-List student with grades               8-Edit course details        9- GO BACK TO LOGIN PAGE." );
 		System.out.println("                                5-Students with max grade                   ");
-		System.out.println("                                                                                         ");
-		System.out.println("                                                                ");
+		System.out.println("                                6-Add existing student/                                                         ");
+		System.out.println("                                  into existing course                               ");
 		
 		try {
 		
@@ -62,19 +62,23 @@ public class ProfessorView {
 			maxGrade();
 			break;
 		case 6 :
+			addActualStudentIntoActualCourse();
 			break;
 		case 7 :
-			editCourseDetails();
+			averageGrade();
 			break;
 		case 8 :
+			editCourseDetails();
+			break;
+		case 9 :
 			new Menu().start();
 			break;
 		default:
-			System.out.println("Please write ONLY INTEGERS FROM 1-8. ");
+			System.out.println("Please write ONLY INTEGERS FROM 1-9. ");
 			professorMenu(professor);
 		}
 		}catch (InputMismatchException e) {
-			System.out.println("Please write ONLY INTEGERS FROM 1-8. ");
+			System.out.println("Please write ONLY INTEGERS FROM 1-9. ");
 			professorMenu(professor);
 		}
 		
@@ -86,10 +90,10 @@ public class ProfessorView {
 	public  void ChangePassword() {
 		Scanner input = new Scanner (System.in);
 		Professor prof = new Professor();
-		
-		System.out.println("Please enter your username: ");
+		System.out.println("*Change Password*\n");
+		System.out.print("Please enter your username: ");
 		prof.setUsernameProf(input.next());
-		System.out.println("Please enter your password: ");
+		System.out.print("Please enter your password: ");
 		prof.setPasswordProf(input.next());
 		
 		try {
@@ -196,25 +200,26 @@ public  void editCourseDetails() {
 	Courses course = new Courses();
 	Professor professor = new Professor();
 	
-	System.out.println("Give username: ");
-	professor.setUsernameProf(input.next());
-	
-	System.out.println("Give course NAME:");
-	course.setCourseName(input.next());
-	
-	AdminService.authenticateCourse(course);
-	
-	List<String> coursesName = ProfessorService.getCourseNameByProfessorUsername(professor.getUsernameProf());
 	
 	
 	try{
-	
+		System.out.print("Give username: ");
+		professor.setUsernameProf(input.next());
+		AdminService.authenticateProfessorByUsername(professor);
+		System.out.print("Give course NAME:");
+		course.setCourseName(input.next());
+		
+		AdminService.authenticateCourse(course);
+		
+		List<String> coursesName = ProfessorService.getCourseNameByProfessorUsername(professor.getUsernameProf());
+		
 		if (coursesName.contains(course.getCourseName()) ) {
 			
 			System.out.print("Add course description: ");
-		    course.setDesciption(input.next());
+		    course.setDesciption(input.nextLine());
+		    
 		    System.out.print("Add course duration time: ");
-		    course.setDurationTime(input.next());
+		    course.setDurationTime(input.nextLine());
 		    
 		    ProfessorService.editCourseDetails(course.getDesciption(), course.getDurationTime(), course.getCourseName());
 		 
@@ -250,7 +255,8 @@ public void gradeStudent() {
 	
 	
 	
-    try {System.out.print("Give your username: ");
+    try {
+    System.out.print("Give your username: ");
 	professor.setUsernameProf(sc.next());
 	AdminService.authenticateProfessorByUsername(professor);
 	
@@ -279,56 +285,7 @@ public void gradeStudent() {
 					//		System.out.println("xxx Student doesn't belong to this course!! xxx");
 						//	gradeStudent();
 						//}
-			          /*  try {
-			            if(ProfessorService.studentHasGrade(c, s)) {
-			    	       System.out.printf("Student %s %s into %s course has already a grade.\n",s.getFirstNameStudent(),s.getLastNameStudent(),c.getCourseName());
-					      System.out.println(">Press 1 to update the grade\n>Press 2 to go back to menu");
-					      int number = sc.nextInt();
-					              
-					            	switch (number) {
-					            	
-					               case 1:
-					            	System.out.print("Enter Grade :" );
-					   				grade.setGrade(sc.nextInt());
-					   				
-					   				    if (grade.getGrade()>=4 && grade.getGrade()<=10) {
-					            	    ProfessorService.gradeStudent(c, s, grade);
-					            	    System.out.printf("<<<<<<<<<< You successfully just graded student %s %s in course %s with grade %d ", s.getFirstNameStudent(),s.getLastNameStudent(),course .getCourseName(),grade.getGrade());
-					       	            Professor p = ProfessorService.getProfByCourseName(course.getCourseName());
-					       			    professorMenu(p);}
-					       			    else{
-					       				System.out.println("Grade should be between numbers 4 to 10. TRY AGAIN!");
-					       				gradeStudent();}
-					       			break;
-					       			
-					       			
-					               case 2:
-					            	   professorMenu(professor);
-					       			break;
-					       			
-					       		default:
-					       			System.out.println("PLEASE WRITE  ||1 OR 2.||");
-					            	   }
-						     }
-			    
-			            else {
-						System.out.print("Enter Grade :" );
-		   				grade.setGrade(sc.nextInt());
-		   				       if (grade.getGrade()>=4 && grade.getGrade()<=10) {
-			            	   ProfessorService.gradeStudent(c, s, grade);
-			            	   System.out.printf("<<<<<<<<<< You successfully just graded student %s %s in course %s with grade %d ", s.getFirstNameStudent(),s.getLastNameStudent(),course .getCourseName(),grade.getGrade());
-			       	           Professor p = ProfessorService.getProfByCourseName(course.getCourseName());
-			       			   professorMenu(p);}
-			       			   else{
-			       				System.out.println("Grade should be between numbers 4 to 10. TRY AGAIN!");
-			       				gradeStudent();
-			       			}
-		   		            }
-			           }catch (InputMismatchException e) {
-							System.out.println("Write only ||1 OR 2.||numbers");
-						}catch (ProjectException exception) {
-							System.out.println(exception.getMessage());
-							gradeStudent(); }*/
+			        
 				}
 		 
 			//END OF FIRST IF
@@ -438,6 +395,7 @@ public void listStudentwithGrades() {
 			System.out.printf("\n %s \n\n",Messages.INVALID_COURSE_NAME.getMessage());
 			listStudentwithGrades();
 		}
+		professorMenu(professor);
 	} catch (ProjectException exception) {
 		System.out.println(exception.getMessage());
 		listStudentwithGrades();
@@ -478,6 +436,7 @@ public void maxGrade() {
 			maxGrade();
 			
 		}
+		professorMenu(professor);
 		
 	} catch (ProjectException exception) {
 		System.out.println(exception.getMessage());
@@ -488,7 +447,72 @@ public void maxGrade() {
 	
 }
 
+public void averageGrade() {
+	System.out.println("*Average grade*");
+	Scanner sc = new Scanner(System.in);
+	Professor professor = new Professor();
+	Courses course = new Courses();
+	try {
+	System.out.print("Enter your username: ");
+	professor.setUsernameProf(sc.next());
+	AdminService.authenticateProfessorByUsername(professor);
+	
+	System.out.print("Enter course name: ");
+	course.setCourseName(sc.next());
+	List<String> coursesName = ProfessorService.getCourseNameByProfessorUsername(professor.getUsernameProf());
+	
+			if (coursesName.contains(course.getCourseName()) ) {
+			double avgGrade= ProfessorService.averageGradeCourse(course.getCourseName());	
+			System.out.printf("Average grade for course %s is %f",course.getCourseName(),avgGrade);
+        } else {
+			System.out.printf("\n %s \n\n",Messages.INVALID_COURSE_NAME.getMessage());
+			averageGrade();
+		}
+			
+professorMenu(professor);
+}catch (ProjectException exception) {
+	System.out.println(exception.getMessage());
+	averageGrade();
+}finally {
+	sc.close();
+}
+}
 
 
+
+public void addActualStudentIntoActualCourse() {
+	Scanner sc = new Scanner(System.in);
+	Professor professor = new Professor();
+	Courses course = new Courses();
+	Student student = new Student();
+	try {
+		System.out.print("Enter your username: ");
+		professor.setUsernameProf(sc.next());
+		AdminService.authenticateProfessorByUsername(professor);
+		
+		System.out.print("Enter course name: ");
+		course.setCourseName(sc.next());
+		Courses c= AdminService.getCourseByName(course.getCourseName());
+		List<String> coursesName = ProfessorService.getCourseNameByProfessorUsername(professor.getUsernameProf());
+		
+		if (coursesName.contains(course.getCourseName()) ) {
+			System.out.println("Give student username:");
+			student.setUserNameStudent(sc.next());
+			ProfessorService.authenticateStudent(student);
+		    ProfessorService.addStudentCoursebyIds(student.getIdStudent(), c.getCourseId());
+		   Student s = AdminService.getAllStudentByUsername(student.getUserNameStudent());
+		    System.out.printf("You just added %s %s into course %s. ",s.getFirstNameStudent(),s.getLastNameStudent(),c.getCourseName());
+        } else {
+        	System.out.printf("\n %s \n\n",Messages.INVALID_COURSE_NAME.getMessage());
+        	addActualStudentIntoActualCourse();
+		}
+		professorMenu(professor);
+	} catch (ProjectException exception) {
+		System.out.println(exception.getMessage());
+		addActualStudentIntoActualCourse();
+		}finally {
+			sc.close();
+		}
+}
 
 }//end of CLASS

@@ -8,7 +8,6 @@ import java.util.Scanner;
 import Accounts.Administrator;
 import Accounts.Professor;
 import Accounts.Student;
-import Accounts.User;
 import Course.Courses;
 import Exceptions.ProjectException;
 import Service.AdminService;

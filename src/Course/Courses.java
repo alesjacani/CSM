@@ -15,17 +15,8 @@ private String durationTime;
 
 
 private List<Professor> professorList = new ArrayList<>();
-private int professorId;
-
-private List<Student> studentList = new ArrayList<>();
-public int getProfessorId() {
-	return professorId;
-}
 
 
-public void setProfessorId(int professorId) {
-	this.professorId = professorId;
-}
 
 
 public Courses() {
@@ -44,15 +35,6 @@ public void setDurationTime(String durationTime) {
 
 
 
-
-public List<Student> getStudentList() {
-	return studentList;
-}
-
-
-public void setStudentList(List<Student> studentList) {
-	this.studentList = studentList;
-}
 
 
 public List<Professor> getProfessorList() {

@@ -18,7 +18,9 @@ static UsersRepository usersrRep= new UsersRepository();
 public static void changePassword(String username,String password) {
 	professorRepository.changeProfessorPassword(username, password);
 }
-
+public static void changePasswordStudent(String username,String password) {
+	professorRepository.changeStudentPassword(username, password);
+}
 	public static void addStudent(Student student,Courses course) {
 		if(professorRepository.studentExists(student)) {
 			throw new ProjectException(Messages.STUDENT_EXISTS.getMessage());
@@ -43,7 +45,9 @@ public static void changePassword(String username,String password) {
  	 }
 	
 	
-	
+	public void method() {
+		
+	}
 	public static void addStudentCoursebyIds(int studentid, int courseId) {
 		professorRepository.addStudentCourseByIDs(studentid, courseId);
 	}
@@ -90,5 +94,10 @@ public static void changePassword(String username,String password) {
 	 
 	 public static List<Student> studentWithMaxGrade(int courseId) {
 		return professorRepository.studentWithMaxGradeByCourseId(courseId);
+	 }
+	 
+	 public static double averageGradeCourse(String courseName) {
+		 return professorRepository.averageGradeCourse(courseName);
+		 
 	 }
 }//end of CLASs

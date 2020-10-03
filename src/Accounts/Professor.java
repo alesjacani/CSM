@@ -16,37 +16,12 @@ public class Professor  {
 	private int idProfessor;
 	
 	
-	//private List<Courses> courseList = new ArrayList<>();
-	//Courses [] professorCourses ;
-	
-	
-	//Student [] students;
-	//private Grade []grades;
-	
-	
-	
-
 	public Professor() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	
 	
-	
-	//public List<Courses> getCourseList() {
-	//	return courseList;
-	//}
-
-
-
-
-	//public void setCourseList(List<Courses> courseList) {
-	//	this.courseList = courseList;
-	//}
-
-
-
-
 	public String getFirstNameProf() {
 		return firstNameProf;
 	}

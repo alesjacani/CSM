@@ -26,10 +26,10 @@ public class UsersRepository {
     		"LEFT JOIN professor ON course.professor_id=professor.professor_id\r\n" + 
     		"WHERE professor.professor_username=?";
     private final String COURSE_EXIST = "SELECT COUNT (*) FROM course WHERE course_name=?";
-    ////////////////////////////
+  
     private final String DELETE_COURSE_BY_NAME = "DELETE FROM course WHERE course_name=?";
     private final String DELETE_COURSE_FROM_GRADE="DELETE FROM grade WHERE course_id=?";
-    ///////////////////////EDDHE NGA TABELA GRADE
+
     private final String LIST_ALL_COURSE = "SELECT * FROM course   \r\n" + 
     		"INNER JOIN professor ON course.professor_id=professor.professor_id  ";
     
@@ -173,13 +173,13 @@ public boolean courseHasProfessor(Courses course) {
 			ResultSet rs = preparedSt.executeQuery();
 			Courses course = new Courses();
 			while (rs.next()) {
-			
+				
 				course.setCourseId(rs.getInt("course_id"));
 				course.setCourseName(rs.getString("course_name"));
 				course.setDesciption(rs.getString("course_description"));
 				course.setDurationTime(rs.getString("course_duration_time"));
 			    
-				//course.setProfessorList(rs.getInt("professor_id"));
+				
 			}
 			return course;
 			

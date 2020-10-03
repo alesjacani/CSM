@@ -8,7 +8,6 @@ import java.util.Scanner;
 import Accounts.Administrator;
 import Accounts.Professor;
 import Accounts.Student;
-import Accounts.User;
 import Course.Courses;
 import Exceptions.ProjectException;
 import Repository.UsersRepository;
@@ -27,13 +26,13 @@ public class AdministratorView {
 		System.out.println("***  WELCOME TO ADMINISTRATOR PAGE "+ admin.getFirstNameAdmin() +"  "+ admin.getLastNameAdmin() +". ***");
 		System.out.println("Type a number to continue.\n");
 		
-		System.out.println("For Course                    For Professor                        For Student                    GO BACK");
-		System.out.println("------------------------------------------------------------------------------------------------------------------");
-		System.out.println("1-Add Course                7- Add professor                       12- Edit student              17- GO BACK TO LOGIN PAGE." );
-		System.out.println("2-Delete all Courses        8- Edit professor                      13- Delete by username");
-		System.out.println("3-View course details       9- Delete by username                  14- List students.");
-		System.out.println("  by Course Name            10-List all professors.                15-                               ");
-		System.out.println("4-List all courses                                                 16-                  ");
+		System.out.println("For Course                    For Professor                       GO BACK");
+		System.out.println("-----------------------------------------------------------------------------------------");
+		System.out.println("1-Add Course                7- Add professor                 11- GO BACK TO LOGIN PAGE." );
+		System.out.println("2-Delete all Courses        8- Edit professor                      ");
+		System.out.println("3-View course details       9- Delete by username                  ");
+		System.out.println("  by Course Name            10-List all professors.                                              ");
+		System.out.println("4-List all courses                                                              ");
 		System.out.println("5-Delete course \nby course name                                      ");
 	    System.out.println("6-Add a actual professor\n into a course.");
 		
@@ -86,35 +85,18 @@ public class AdministratorView {
 		case 10:
 			listAllProfessors();
 			break;
-		case 11:
 		
-			break;
-		case 12:
-			
-			break;
-		case 13:
-			
-			break;
-		case 14:
-		
-			break;
-        case 15:
-			
-			break;
-        case 16:
-	    
-	        break;
-        case 17:
+        case 11:
         	new Menu().start();
 			break;
  
 		default:
-				System.out.println("******   Please write ONLY INTEGERS FROM 1-16.    ****** \n \n");
+				System.out.println("******   Please write ONLY INTEGERS FROM 1-11.    ****** \n \n");
 				adminMenu();
 				//try ex ??????????
 		}
 } catch (InputMismatchException e) {
-			System.out.println("Please write ONLY INTEGERS FROM 1-16. ");
+			System.out.println("Please write ONLY INTEGERS FROM 1-11. ");
 			adminMenu();
 		}
 		
@@ -136,12 +118,12 @@ public class AdministratorView {
 			
 			
 			AdminService.addCourse(course);
-		     
-		    
-			System.out.printf ("You just add a new course with name %s with id %d ", course.getCourseName(), course.getCourseId());
+		   Courses c=  AdminService.getCourseByName(course.getCourseName());
+		  
+			System.out.printf ("You just add a new course with name %s with id %d ", course.getCourseName(), c.getCourseId());
 			adminMenu();
 
-        } catch (ProjectException exception) {//string merr dhe int ???????
+        } catch (ProjectException exception) {
 			System.out.printf(" \n %s \n\n",exception.getMessage());
 			addCourse();
 		} catch (InputMismatchException exception) {
@@ -207,9 +189,7 @@ public class AdministratorView {
 			
 			course.setCourseName(sc.next()) ;
 			
-			System.out.print("Give course ID to see the course details: ");
-			int courseId= sc.nextInt();
-			course.setCourseId(courseId);
+			
 			Courses c = AdminService.authenticateCourse(course);
 			
             Professor p= ProfessorService.getProfByCourseName(course.getCourseName());
@@ -238,7 +218,7 @@ public class AdministratorView {
 			
 		System.out.printf("\nThe course with id %d has: \n -Name: %s \n -Description: %s , \n -Duration of %s \n -Teached by professor %s %s. \n -List of students: \n",
 		                c.getCourseId(),c.getCourseName(),c.getDesciption(),c.getDurationTime(),c.getProfessorList().get(0).getFirstNameProf(),
-		               c.getProfessorList().get(0).getLastNameProf() );
+		             c.getProfessorList().get(0).getLastNameProf() ); 
 		 //for(Courses course: AdminService.getCourseByProfessorUsername(c.getProfessorList().get(0).getUsernameProf())) {
 	    //	System.out.printf("%s %s \n",course.getStudentList().get(0).getFirstNameStudent(),course.getStudentList().get(0).getLastNameStudent());
 		for(Student s :AdminService.listStudentByCourseName(c.getCourseName())) {
@@ -246,6 +226,7 @@ public class AdministratorView {
 			
 	    }
 }
+		adminMenu();
 }
 	 
 	
@@ -327,19 +308,20 @@ public class AdministratorView {
 			System.out.print("Give the professor id: ");
 			professor.setIdProfessor(input.nextInt());
 			///authh
-			System.out.print("Give the course id you want to add the professor: ");
-			course.setCourseId(input.nextInt());
+			//System.out.print("Give the course id you want to add the professor: ");
+			//course.setCourseId(input.nextInt());
 			System.out.print("Give the course Name you want to add the professor: ");
 			course.setCourseName(input.next());
 			AdminService.authenticateCourse(course);
+			Courses c= AdminService.getCourseByName(course.getCourseName());
 		    AdminService.courseHasProf(course);
 		    
 	
-			AdminService.addProfIntoCourse(professor, course);
+			AdminService.addProfIntoCourse(professor, c); //me id
 				
 		    Professor p=ProfessorService.getProfByCourseName(course.getCourseName());
 				
-		   // AdminService.getCourseByProfessorId(professor.getIdProfessor());
+		   
 				
 			System.out.printf("You just added professor: %s %s into %s course.",p.getFirstNameProf(),p.getLastNameProf(),course.getCourseName());
 		

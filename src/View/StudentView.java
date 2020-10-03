@@ -30,8 +30,9 @@ public void studentMenu(Student student) {
 		System.out.println("\n");
 		System.out.println("Please write down the number to continue.");
 		
-		System.out.println("1- View the course and the grades."); // hap , select kurset qe ben pjese dhe shef notat
-		System.out.println("2- Go Back. \n");
+		System.out.println("1- View the course and the grades.");
+		System.out.println("2- Change password \n");
+		System.out.println("3- Go Back. \n");
        
 		try {
 		Scanner inputMenu =new Scanner (System.in);		
@@ -44,9 +45,11 @@ public void studentMenu(Student student) {
 			break;
 			
 		case 2 :
+			ChangePassword();
+			break;
+		case 3 :
 			new Menu().start();
 			break;
-			
 		
 		
 		default:
@@ -64,19 +67,21 @@ public void studentMenu(Student student) {
 public void viewCourseGrade() {
 	Scanner sc = new Scanner (System.in);
 	Student student= new Student();
-	
-	System.out.print("Write your username: ");
-	student.setUserNameStudent(sc.next());
-    
-    
-    
+	//ProfessorService profs= new ProfessorService();
 	try {
+		System.out.print("Write your username: ");
+		student.setUserNameStudent(sc.next());
+		
 		ProfessorService.authenticateStudent(student);
 		System.out.println("Course/s        Professor         Your grade");
 		System.out.println("--------------------------------------------");
+		
 		for (Courses c: AdminService.listCourseByStudentUsername(student.getUserNameStudent())) {
+			
 			Student s=AdminService.getAllStudentByUsername(student.getUserNameStudent());
+			
 			Professor p = ProfessorService.getProfByCourseName(c.getCourseName());
+			
 			int grade = ProfessorService.getGradeByStudentCourseId(s.getIdStudent(), c.getCourseId());
 			System.out.printf("%s            %s %s      %d\n",c.getCourseName(),p.getFirstNameProf(),p.getLastNameProf(),grade);
 		}
@@ -87,4 +92,32 @@ public void viewCourseGrade() {
 }
 
 
+
+public  void ChangePassword() {
+	Scanner input = new Scanner (System.in);
+	Student student= new Student();
+	System.out.println("*Change Password*\n");
+	System.out.print("Please enter your username: ");
+	student.setUserNameStudent(input.next());
+	System.out.print("Please enter your password: ");
+	student.setPasswordStudent(input.next());
+	
+	try {
+	ProfessorService.authenticateStudent(student);
+	
+	System.out.println("Enter your new password: ");
+	student.setPasswordStudent(input.next());
+	
+	ProfessorService.changePasswordStudent(student.getUserNameStudent(), student.getPasswordStudent());
+	System.out.println("Your password is changed!!!! :)");
+	
+	studentMenu(student);
+	}catch (ProjectException exception) {
+		System.out.println(">>>> "+exception.getMessage());
+		ChangePassword();
+	}
+	finally {
+		input.close();
+	}
+}
 }//end of Class 
